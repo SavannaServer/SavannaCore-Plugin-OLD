@@ -30,6 +30,6 @@ public class CoreConfig extends ConfigFile {
         MYSQL_PORT,
         MYSQL_USER,
         MYSQL_PASSWORD,
-        MYSQL_DATABASE;
+        MYSQL_DATABASE
     }
 }

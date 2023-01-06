@@ -15,6 +15,16 @@ import java.util.List;
 
 public class Bullet {
     private static final List<Bullet> bullets = new ArrayList<>();
+    private final Class<? extends ThrowableProjectile> entityType;
+    private Projectile projectile = null;
+    private Player shooter;
+    private int damage = 1;
+    private double maxDistance = 10;
+    private double distance = 0;
+    public Bullet(Class<? extends ThrowableProjectile> entityType) {
+        this.entityType = entityType;
+        bullets.add(this);
+    }
 
     public static void clearBullets() {
         for (final Bullet bullet : bullets) {
@@ -26,21 +36,9 @@ public class Bullet {
     @Nullable
     public static Bullet getBullet(@Nonnull Entity projectile) {
         return bullets.stream()
-                .filter(bullet -> bullet.getProjectile() != null && ((Entity) bullet.getProjectile()).equals(projectile))
+                .filter(bullet -> bullet.getProjectile() != null && bullet.getProjectile().equals(projectile))
                 .findFirst()
                 .orElse(null);
-    }
-
-    private final Class<? extends ThrowableProjectile> entityType;
-    private Projectile projectile = null;
-    private Player shooter;
-    private int damage = 1;
-    private double maxDistance = 10;
-    private double distance = 0;
-
-    public Bullet(Class<? extends ThrowableProjectile> entityType) {
-        this.entityType = entityType;
-        bullets.add(this);
     }
 
     public Class<? extends ThrowableProjectile> getEntityType() {
@@ -101,7 +99,7 @@ public class Bullet {
                 location.getWorld().spawnParticle(Particle.BLOCK_CRACK, location, 5, 0, 0, 0, event.getHitBlock().getBlockData());
                 return;
             }
-            if (event.getHitEntity() != null)  {
+            if (event.getHitEntity() != null) {
                 if (!(event.getHitEntity() instanceof LivingEntity)) {
                     event.setCancelled(true);
                     return;
@@ -116,7 +114,6 @@ public class Bullet {
                     hitEntity.setHealth(hitEntity.getHealth() - bullet.damage);
                 } catch (Exception ignored) {
                 }
-                return;
             }
         }
     }

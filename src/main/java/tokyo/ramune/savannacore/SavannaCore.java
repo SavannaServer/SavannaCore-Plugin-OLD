@@ -7,12 +7,12 @@ import tokyo.ramune.savannacore.physics.Physics;
 
 public final class SavannaCore extends JavaPlugin {
     private CoreConfig config;
-    private Physics    physics;
-    private Gun        gun;
+    private Physics physics;
+    private Gun gun;
 
     @Override
     public void onEnable() {
-        config  = new CoreConfig(this);
+        config = new CoreConfig(this);
         physics = new Physics();
         gun = new Gun();
 

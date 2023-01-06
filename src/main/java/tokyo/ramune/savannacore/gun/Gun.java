@@ -1,12 +1,12 @@
 package tokyo.ramune.savannacore.gun;
 
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EnderPearl;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.util.EventUtil;
 
@@ -22,8 +22,13 @@ public class Gun {
     static class ThrowBulletListener implements Listener {
         @EventHandler
         public void onPlayerInteract(PlayerInteractEvent event) {
-            Player player = event.getPlayer();
-            new Bullet(Snowball.class).shoot(player, player.getLocation().add(0, 1, 0), player.getLocation().getDirection().multiply(4));
+            if (!event.getAction().isLeftClick()) return;
+
+            final Player player = event.getPlayer();
+            final Location location = player.getLocation().add(0, 1.5, 0);
+            final Vector velocity = location.getDirection().multiply(4);
+
+            new Bullet(Snowball.class).shoot(player, location, velocity);
         }
     }
 }

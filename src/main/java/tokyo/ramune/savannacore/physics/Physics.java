@@ -5,7 +5,9 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -20,7 +22,9 @@ import tokyo.ramune.savannacore.util.EventUtil;
 import tokyo.ramune.savannacore.util.SoundUtil;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class Physics {
     private static Physics instance;
@@ -68,7 +72,10 @@ public class Physics {
         }
     }
 
-    static class PhysicsAutoApplyListener implements Listener {
+    // Event listeners
+
+    // Auto apply physics joined players.
+    private static class PhysicsAutoApplyListener implements Listener {
         private final Physics physics = instance;
 
         @EventHandler(priority = EventPriority.LOWEST)
@@ -86,6 +93,7 @@ public class Physics {
         }
     }
 
+    // Force sprint when the player moves.
     static class AutoSprintListener implements Listener {
         @EventHandler
         public void onPlayerMove(PlayerMoveEvent event) {
@@ -95,7 +103,9 @@ public class Physics {
         }
     }
 
-    static class SlidingListener implements Listener {
+    // Sliding system
+
+    private static class SlidingListener implements Listener {
         private final Physics physics = instance;
         private final Set<Player> allowedSlidingPlayers = new HashSet<>();
 
@@ -128,7 +138,8 @@ public class Physics {
         }
     }
 
-    static class WallJumpListener implements Listener {
+    // Wall jump system
+    private static class WallJumpListener implements Listener {
         private final Physics physics = instance;
 
         @EventHandler
@@ -146,16 +157,21 @@ public class Physics {
             // Check wall exists
             final Location location = player.getLocation();
             double distance = 0.4;
-            Block eastBlock  = location.clone().add(distance, 1, 0).getBlock(),
-                  southBlock = location.clone().add(0, 1, distance).getBlock(),
-                  westBlock  = location.clone().add(-distance, 1, 0).getBlock(),
-                  northBlock = location.clone().add(0, 1, -distance).getBlock();
+            Block eastBlock = location.clone().add(distance, 1, 0).getBlock(),
+                    southBlock = location.clone().add(0, 1, distance).getBlock(),
+                    westBlock = location.clone().add(-distance, 1, 0).getBlock(),
+                    northBlock = location.clone().add(0, 1, -distance).getBlock();
 
-            if (!eastBlock.isEmpty() && !eastBlock.getType().isTransparent() && eastBlock.getType().isOccluding()) wallEast = true;
-            if (!southBlock.isEmpty() && !southBlock.getType().isTransparent() && southBlock.getType().isOccluding()) wallSouth = true;
-            if (!westBlock.isEmpty() && !westBlock.getType().isTransparent() && westBlock.getType().isOccluding()) wallWest = true;
-            if (!northBlock.isEmpty() && !northBlock.getType().isTransparent() && northBlock.getType().isOccluding()) wallNorth = true;
+            if (!eastBlock.isEmpty() && !eastBlock.getType().isTransparent() && eastBlock.getType().isOccluding())
+                wallEast = true;
+            if (!southBlock.isEmpty() && !southBlock.getType().isTransparent() && southBlock.getType().isOccluding())
+                wallSouth = true;
+            if (!westBlock.isEmpty() && !westBlock.getType().isTransparent() && westBlock.getType().isOccluding())
+                wallWest = true;
+            if (!northBlock.isEmpty() && !northBlock.getType().isTransparent() && northBlock.getType().isOccluding())
+                wallNorth = true;
 
+            // Apply velocity
             Vector velocity = player.getVelocity();
             double multiply = 3;
             double xzVelocity = 0.4, yVelocity = 0.6;
@@ -185,24 +201,30 @@ public class Physics {
                         .multiply(multiply)
                         .setY(velocity.getY())
                         .add(new Vector(0, velocity.getY() < 0 ? yVelocity : Math.min(yVelocity, velocity.getY()), xzVelocity)));
-                return;
             }
         }
     }
 
-    static class JumpPadListener implements Listener {
+    // Jump pad system
+
+    // TODO: 2023/01/07 This used a stone pressure pad temporarily to see how it work.
+    //  Make original jump pad.
+    private static class JumpPadListener implements Listener {
         @EventHandler
         public void onPlayerInteract(PlayerInteractEvent event) {
             final Player player = event.getPlayer();
 
             if (!event.getAction().equals(Action.PHYSICAL)) return;
-            if (!Objects.requireNonNull(event.getClickedBlock()).getType().equals(Material.STONE_PRESSURE_PLATE)) return;
+            if (!Objects.requireNonNull(event.getClickedBlock()).getType().equals(Material.STONE_PRESSURE_PLATE))
+                return;
+
             player.setVelocity(player.getVelocity().setY(1));
             event.setCancelled(true);
         }
     }
 
-    static class NoHungerListener implements Listener {
+    // Force no hunger
+    private static class NoHungerListener implements Listener {
         private final Physics physics = instance;
 
         @EventHandler
@@ -214,7 +236,8 @@ public class Physics {
         }
     }
 
-    static class NoFallDamageListener implements Listener {
+    // Force no fall damage
+    private static class NoFallDamageListener implements Listener {
         private final Physics physics = instance;
 
         @EventHandler
@@ -227,7 +250,10 @@ public class Physics {
         }
     }
 
-    static class EnableCommand extends Command {
+    // Commands
+
+    // Enable physics command
+    private static class EnableCommand extends Command {
         protected EnableCommand() {
             super("enable-physics");
         }
@@ -256,7 +282,8 @@ public class Physics {
         }
     }
 
-    static class DisableCommand extends Command {
+    // disable physics command
+    private static class DisableCommand extends Command {
         protected DisableCommand() {
             super("disable-physics");
         }
