@@ -1,0 +1,6 @@
+name: SavannaCore
+version: '${project.version}'
+main: tokyo.ramune.savannacore.SavannaCore
+api-version: 1.19
+authors: [ RamuneRemonedo ]
+description: This is a PaperMC plugin
