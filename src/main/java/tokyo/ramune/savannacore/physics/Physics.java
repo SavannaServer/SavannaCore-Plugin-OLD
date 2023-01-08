@@ -104,7 +104,6 @@ public class Physics {
     }
 
     // Sliding system
-
     private static class SlidingListener implements Listener {
         private final Physics physics = instance;
         private final Set<Player> allowedSlidingPlayers = new HashSet<>();
@@ -206,7 +205,6 @@ public class Physics {
     }
 
     // Jump pad system
-
     // TODO: 2023/01/07 This used a stone pressure pad temporarily to see how it work.
     //  Make original jump pad.
     private static class JumpPadListener implements Listener {
@@ -218,7 +216,8 @@ public class Physics {
             if (!Objects.requireNonNull(event.getClickedBlock()).getType().equals(Material.STONE_PRESSURE_PLATE))
                 return;
 
-            player.setVelocity(player.getVelocity().setY(1));
+            player.setVelocity(player.getVelocity().multiply(1.3).setY(1));
+            SoundUtil.jumpPad(player);
             event.setCancelled(true);
         }
     }
