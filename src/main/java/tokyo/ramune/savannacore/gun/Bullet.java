@@ -128,7 +128,6 @@ public final class Bullet {
                     final Location hitBlockLocation = event.getHitBlock().getLocation();
                     location.getWorld().spawnParticle(Particle.BLOCK_CRACK, hitBlockLocation, 5, 0.1F, 0.1F, 0.1F, 0.1F, blockData);
                 }
-                bullet.getShooter().sendMessage(new KeybindComponent("key.swapOffhand"));
                 return;
             }
             if (event.getHitEntity() != null) {
