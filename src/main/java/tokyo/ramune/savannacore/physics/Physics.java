@@ -1,20 +1,25 @@
 package tokyo.ramune.savannacore.physics;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
+import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockReceiveGameEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.util.CommandUtil;
@@ -23,7 +28,6 @@ import tokyo.ramune.savannacore.util.SoundUtil;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class Physics {
@@ -93,11 +97,12 @@ public class Physics {
         }
     }
 
-    // Force sprint when the player moves.
+    // Force sprint
     static class AutoSprintListener implements Listener {
         @EventHandler
         public void onPlayerMove(PlayerMoveEvent event) {
             final Player player = event.getPlayer();
+            if (!instance.isAttached(player)) return;
 
             player.setSprinting(true);
         }
@@ -105,14 +110,14 @@ public class Physics {
 
     // Sliding system
     private static class SlidingListener implements Listener {
-        private final Physics physics = instance;
         private final Set<Player> allowedSlidingPlayers = new HashSet<>();
 
         @EventHandler
         public void onPlayerMove(PlayerMoveEvent event) {
             final Player player = event.getPlayer();
 
-            if (!physics.isAttached(player)) return;
+            if (!instance.isAttached(player)) return;
+
             if (!allowedSlidingPlayers.contains(player)) return;
             if (!((LivingEntity) player).isOnGround()) return;
             allowedSlidingPlayers.remove(player);
@@ -131,7 +136,7 @@ public class Physics {
         @EventHandler
         public void onPlayerJump(PlayerJumpEvent event) {
             final Player player = event.getPlayer();
-            if (!physics.isAttached(player)) return;
+            if (!instance.isAttached(player)) return;
 
             allowedSlidingPlayers.add(player);
         }
@@ -139,12 +144,11 @@ public class Physics {
 
     // Wall jump system
     private static class WallJumpListener implements Listener {
-        private final Physics physics = instance;
-
         @EventHandler
         public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
             final Player player = event.getPlayer();
-            if (!physics.isAttached(player)) return;
+            if (!instance.isAttached(player)) return;
+
             if (!event.isSneaking()) return;
             if (!event.getPlayer().getLocation().getBlock().isEmpty()) return;
 
@@ -155,11 +159,11 @@ public class Physics {
 
             // Check wall exists
             final Location location = player.getLocation();
-            double distance = 0.4;
-            Block eastBlock = location.clone().add(distance, 1, 0).getBlock(),
-                    southBlock = location.clone().add(0, 1, distance).getBlock(),
-                    westBlock = location.clone().add(-distance, 1, 0).getBlock(),
-                    northBlock = location.clone().add(0, 1, -distance).getBlock();
+            final double distance = 0.4;
+            final Block eastBlock = location.clone().add(distance, 1, 0).getBlock(),
+                        southBlock = location.clone().add(0, 1, distance).getBlock(),
+                        westBlock = location.clone().add(-distance, 1, 0).getBlock(),
+                        northBlock = location.clone().add(0, 1, -distance).getBlock();
 
             if (!eastBlock.isEmpty() && !eastBlock.getType().isTransparent() && eastBlock.getType().isOccluding())
                 wallEast = true;
@@ -171,35 +175,27 @@ public class Physics {
                 wallNorth = true;
 
             // Apply velocity
-            Vector velocity = player.getVelocity();
-            double multiply = 3;
-            double xzVelocity = 0.4, yVelocity = 0.6;
+            final double multiply = 3;
+            final double xzVelocity = 0.4, yVelocity = 0.6;
+            final Vector velocity = player.getVelocity().multiply(multiply).setY(player.getVelocity().getY());
             if (wallEast) {
-                player.setVelocity(velocity.clone()
-                        .multiply(multiply)
-                        .setY(velocity.getY())
-                        .add(new Vector(-xzVelocity, velocity.getY() < 0 ? yVelocity : Math.min(yVelocity, velocity.getY()), 0)));
+                final Vector addVector = new Vector(-xzVelocity, velocity.getY() < 0 ? yVelocity : Math.min(yVelocity, velocity.getY()), 0);
+                player.setVelocity(velocity.add(addVector));
                 return;
             }
             if (wallSouth) {
-                player.setVelocity(velocity.clone()
-                        .multiply(multiply)
-                        .setY(velocity.getY())
-                        .add(new Vector(0, velocity.getY() < 0 ? yVelocity : Math.min(yVelocity, velocity.getY()), -xzVelocity)));
+                final Vector addVector = new Vector(0, velocity.getY() < 0 ? yVelocity : Math.min(yVelocity, velocity.getY()), -xzVelocity);
+                player.setVelocity(velocity.add(addVector));
                 return;
             }
             if (wallWest) {
-                player.setVelocity(velocity.clone()
-                        .multiply(multiply)
-                        .setY(velocity.getY())
-                        .add(new Vector(xzVelocity, velocity.getY() < 0 ? yVelocity : Math.min(yVelocity, velocity.getY()), 0)));
+                final Vector addVector = new Vector(xzVelocity, velocity.getY() < 0 ? yVelocity : Math.min(yVelocity, velocity.getY()), 0);
+                player.setVelocity(velocity.add(addVector));
                 return;
             }
             if (wallNorth) {
-                player.setVelocity(velocity.clone()
-                        .multiply(multiply)
-                        .setY(velocity.getY())
-                        .add(new Vector(0, velocity.getY() < 0 ? yVelocity : Math.min(yVelocity, velocity.getY()), xzVelocity)));
+                final Vector addVector = new Vector(0, velocity.getY() < 0 ? yVelocity : Math.min(yVelocity, velocity.getY()), xzVelocity);
+                player.setVelocity(velocity.add(addVector));
             }
         }
     }
@@ -209,41 +205,48 @@ public class Physics {
     //  Make original jump pad.
     private static class JumpPadListener implements Listener {
         @EventHandler
-        public void onPlayerInteract(PlayerInteractEvent event) {
+        public void onPlayerMove(PlayerMoveEvent event) {
             final Player player = event.getPlayer();
 
-            if (!event.getAction().equals(Action.PHYSICAL)) return;
-            if (!Objects.requireNonNull(event.getClickedBlock()).getType().equals(Material.STONE_PRESSURE_PLATE))
-                return;
+            if (!instance.isAttached(player)) return;
 
-            player.setVelocity(player.getVelocity().multiply(1.3).setY(1));
+            if (!((LivingEntity) player).isOnGround()) return;
+            if (!player.getLocation().getBlock().getType().equals(Material.SCULK_SENSOR)) return;
+            final JumpPad jumpPad = new JumpPad(player.getLocation().getBlock());
+            if (jumpPad.getVelocity() <= 0) return;
+
+            player.setVelocity(player.getVelocity().multiply(1.3).setY(jumpPad.getVelocity()));
             SoundUtil.jumpPad(player);
+        }
+
+        @EventHandler
+        public void onGenericGame(BlockReceiveGameEvent event) {
+            if (!event.getBlock().getType().equals(Material.SCULK_SENSOR)) return;
             event.setCancelled(true);
+            final Entity entity = event.getEntity();
+            if (!(entity instanceof final Player player)) return;
+            player.stopSound(Sound.BLOCK_SCULK_SENSOR_CLICKING_STOP);
         }
     }
 
     // Force no hunger
     private static class NoHungerListener implements Listener {
-        private final Physics physics = instance;
-
         @EventHandler
         public void onFoodLevelChange(FoodLevelChangeEvent event) {
             if (!event.getEntityType().equals(EntityType.PLAYER)) return;
             final Player player = (Player) event.getEntity();
-            if (!physics.isAttached(player)) return;
+            if (!instance.isAttached(player)) return;
             event.setFoodLevel(20);
         }
     }
 
     // Force no fall damage
     private static class NoFallDamageListener implements Listener {
-        private final Physics physics = instance;
-
         @EventHandler
         public void onEntityDamage(EntityDamageEvent event) {
             if (!event.getEntityType().equals(EntityType.PLAYER)) return;
             final Player player = (Player) event.getEntity();
-            if (!physics.isAttached(player)) return;
+            if (!instance.isAttached(player)) return;
             if (!event.getCause().equals(EntityDamageEvent.DamageCause.FALL)) return;
             event.setCancelled(true);
         }
