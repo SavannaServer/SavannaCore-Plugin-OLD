@@ -6,7 +6,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.Nonnull;
 
-public class SoundUtil {
+public final class SoundUtil {
     public static void success(@Nonnull Player player) {
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1, 1);
     }
@@ -21,5 +21,9 @@ public class SoundUtil {
 
     public static void hit(@NonNull Player player) {
         player.playSound(player.getLocation(), Sound.BLOCK_STONE_STEP, 2, 1);
+    }
+
+    public static void gameOver(@Nonnull Player player) {
+        player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 1);
     }
 }

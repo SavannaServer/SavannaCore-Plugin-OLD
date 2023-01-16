@@ -6,7 +6,7 @@ import org.bukkit.block.Block;
 
 import javax.annotation.Nonnull;
 
-public class JumpPad {
+public final class JumpPad {
     private final Block jumpPad;
 
     public JumpPad(@Nonnull Block jumpPad) {
@@ -19,11 +19,11 @@ public class JumpPad {
         return jumpPad;
     }
 
-    public void setVelocity(double velocity) {
-        NBTEditor.set(jumpPad, velocity, "SavannaCore:JumpPad.velocity");
-    }
-
     public double getVelocity() {
         return NBTEditor.getDouble(jumpPad, "SavannaCore:JumpPad.velocity");
+    }
+
+    public void setVelocity(double velocity) {
+        NBTEditor.set(jumpPad, velocity, "SavannaCore:JumpPad.velocity");
     }
 }

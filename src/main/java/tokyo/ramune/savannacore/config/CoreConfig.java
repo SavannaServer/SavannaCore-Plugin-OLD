@@ -4,7 +4,7 @@ import org.bukkit.plugin.Plugin;
 
 import javax.annotation.Nonnull;
 
-public class CoreConfig extends ConfigFile {
+public final class CoreConfig extends ConfigFile {
     public CoreConfig(Plugin plugin) {
         super(plugin, "core_config.yml");
 

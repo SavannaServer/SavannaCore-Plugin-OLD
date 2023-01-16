@@ -1,7 +1,6 @@
 package tokyo.ramune.savannacore.gun;
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
-import net.md_5.bungee.api.chat.KeybindComponent;
 import org.bukkit.*;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
@@ -23,7 +22,7 @@ import java.util.*;
 
 public final class Bullet {
     private static final Set<Bullet> BULLETS = new HashSet<>();
-    private final Class<? extends Projectile> entityType;
+    private final Class<? extends Projectile> ENTITY_TYPE;
     private Projectile projectile;
     private Player shooter;
     private int damage = 1;
@@ -32,7 +31,7 @@ public final class Bullet {
     private double distance = 0;
 
     public Bullet(Class<? extends Projectile> entityType) {
-        this.entityType = entityType;
+        this.ENTITY_TYPE = entityType;
         BULLETS.add(this);
     }
 
@@ -51,8 +50,8 @@ public final class Bullet {
                 .orElse(null);
     }
 
-    public Class<? extends Projectile> getEntityType() {
-        return entityType;
+    public Class<? extends Projectile> getENTITY_TYPE() {
+        return ENTITY_TYPE;
     }
 
     @Nullable
@@ -103,7 +102,7 @@ public final class Bullet {
         this.shotLocation = location;
         final Random random = new Random();
         velocity.add(new Vector(random.nextDouble(-shake, shake * 2), random.nextDouble(-shake, shake * 2), random.nextDouble(-shake, shake * 2)));
-        projectile = shooter.launchProjectile(entityType, velocity);
+        projectile = shooter.launchProjectile(ENTITY_TYPE, velocity);
         projectile.setGravity(false);
         projectile.setVelocity(velocity);
         projectile.setSilent(true);
@@ -241,6 +240,7 @@ public final class Bullet {
         private static final HandlerList HANDLERS = new HandlerList();
         private final Bullet bullet;
         private final Location from, to;
+
         public BulletMoveEvent(@Nonnull Bullet bullet, @Nonnull Location from, @Nonnull Location to) {
             this.bullet = bullet;
             this.from = from;

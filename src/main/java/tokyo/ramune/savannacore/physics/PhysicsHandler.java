@@ -1,25 +1,19 @@
 package tokyo.ramune.savannacore.physics;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
-import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockReceiveGameEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.util.CommandUtil;
@@ -30,12 +24,12 @@ import javax.annotation.Nonnull;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Physics {
-    private static Physics instance;
+public final class PhysicsHandler {
+    private static PhysicsHandler instance;
 
     private final Set<Player> attachedPlayers;
 
-    public Physics() {
+    public PhysicsHandler() {
         instance = this;
 
         attachedPlayers = new HashSet<>();
@@ -45,7 +39,6 @@ public class Physics {
                 new AutoSprintListener(),
                 new SlidingListener(),
                 new WallJumpListener(),
-                new JumpPadListener(),
                 new NoHungerListener(),
                 new NoFallDamageListener()
         );
@@ -79,8 +72,8 @@ public class Physics {
     // Event listeners
 
     // Auto apply physics joined players.
-    private static class PhysicsAutoApplyListener implements Listener {
-        private final Physics physics = instance;
+    private static final class PhysicsAutoApplyListener implements Listener {
+        private final PhysicsHandler physics = instance;
 
         @EventHandler(priority = EventPriority.LOWEST)
         public void onPlayerJoin(PlayerJoinEvent event) {
@@ -97,19 +90,8 @@ public class Physics {
         }
     }
 
-    // Force sprint
-    static class AutoSprintListener implements Listener {
-        @EventHandler
-        public void onPlayerMove(PlayerMoveEvent event) {
-            final Player player = event.getPlayer();
-            if (!instance.isAttached(player)) return;
-
-            player.setSprinting(true);
-        }
-    }
-
     // Sliding system
-    private static class SlidingListener implements Listener {
+    private static final class SlidingListener implements Listener {
         private final Set<Player> allowedSlidingPlayers = new HashSet<>();
 
         @EventHandler
@@ -143,7 +125,7 @@ public class Physics {
     }
 
     // Wall jump system
-    private static class WallJumpListener implements Listener {
+    private static final class WallJumpListener implements Listener {
         @EventHandler
         public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
             final Player player = event.getPlayer();
@@ -161,9 +143,9 @@ public class Physics {
             final Location location = player.getLocation();
             final double distance = 0.4;
             final Block eastBlock = location.clone().add(distance, 1, 0).getBlock(),
-                        southBlock = location.clone().add(0, 1, distance).getBlock(),
-                        westBlock = location.clone().add(-distance, 1, 0).getBlock(),
-                        northBlock = location.clone().add(0, 1, -distance).getBlock();
+                    southBlock = location.clone().add(0, 1, distance).getBlock(),
+                    westBlock = location.clone().add(-distance, 1, 0).getBlock(),
+                    northBlock = location.clone().add(0, 1, -distance).getBlock();
 
             if (!eastBlock.isEmpty() && !eastBlock.getType().isTransparent() && eastBlock.getType().isOccluding())
                 wallEast = true;
@@ -200,37 +182,19 @@ public class Physics {
         }
     }
 
-    // Jump pad system
-    // TODO: 2023/01/07 This used a stone pressure pad temporarily to see how it work.
-    //  Make original jump pad.
-    private static class JumpPadListener implements Listener {
+    // Force sprint
+    private static final class AutoSprintListener implements Listener {
         @EventHandler
         public void onPlayerMove(PlayerMoveEvent event) {
             final Player player = event.getPlayer();
-
             if (!instance.isAttached(player)) return;
 
-            if (!((LivingEntity) player).isOnGround()) return;
-            if (!player.getLocation().getBlock().getType().equals(Material.SCULK_SENSOR)) return;
-            final JumpPad jumpPad = new JumpPad(player.getLocation().getBlock());
-            if (jumpPad.getVelocity() <= 0) return;
-
-            player.setVelocity(player.getVelocity().multiply(1.3).setY(jumpPad.getVelocity()));
-            SoundUtil.jumpPad(player);
-        }
-
-        @EventHandler
-        public void onGenericGame(BlockReceiveGameEvent event) {
-            if (!event.getBlock().getType().equals(Material.SCULK_SENSOR)) return;
-            event.setCancelled(true);
-            final Entity entity = event.getEntity();
-            if (!(entity instanceof final Player player)) return;
-            player.stopSound(Sound.BLOCK_SCULK_SENSOR_CLICKING_STOP);
+            player.setSprinting(true);
         }
     }
 
     // Force no hunger
-    private static class NoHungerListener implements Listener {
+    private static final class NoHungerListener implements Listener {
         @EventHandler
         public void onFoodLevelChange(FoodLevelChangeEvent event) {
             if (!event.getEntityType().equals(EntityType.PLAYER)) return;
@@ -241,7 +205,7 @@ public class Physics {
     }
 
     // Force no fall damage
-    private static class NoFallDamageListener implements Listener {
+    private static final class NoFallDamageListener implements Listener {
         @EventHandler
         public void onEntityDamage(EntityDamageEvent event) {
             if (!event.getEntityType().equals(EntityType.PLAYER)) return;
@@ -255,8 +219,8 @@ public class Physics {
     // Commands
 
     // Enable physics command
-    private static class EnableCommand extends Command {
-        protected EnableCommand() {
+    private static final class EnableCommand extends Command {
+        private EnableCommand() {
             super("enable-physics");
         }
 
@@ -276,7 +240,7 @@ public class Physics {
                 CommandUtil.mismatchSender(sender);
                 return false;
             }
-            Physics.instance.apply(targetPlayer, true);
+            PhysicsHandler.instance.apply(targetPlayer, true);
             CommandUtil.success(sender);
             targetPlayer.sendMessage(ChatColor.GREEN + "Physics enabled!");
             SoundUtil.success(targetPlayer);
@@ -285,8 +249,8 @@ public class Physics {
     }
 
     // disable physics command
-    private static class DisableCommand extends Command {
-        protected DisableCommand() {
+    private static final class DisableCommand extends Command {
+        private DisableCommand() {
             super("disable-physics");
         }
 
@@ -306,7 +270,7 @@ public class Physics {
                 CommandUtil.mismatchSender(sender);
                 return false;
             }
-            Physics.instance.apply(targetPlayer, false);
+            PhysicsHandler.instance.apply(targetPlayer, false);
             CommandUtil.success(sender);
             targetPlayer.sendMessage(ChatColor.RED + "Physics disabled!");
             SoundUtil.success(targetPlayer);

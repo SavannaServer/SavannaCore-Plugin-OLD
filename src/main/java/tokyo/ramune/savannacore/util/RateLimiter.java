@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RateLimiter<T> {
+public final class RateLimiter<T> {
     private static List<RateLimiter> instancedRateLimiters = new ArrayList<>();
     private final double permitsPerSeconds;
     private Map<T, com.google.common.util.concurrent.RateLimiter> rateLimiters = new HashMap<>();
