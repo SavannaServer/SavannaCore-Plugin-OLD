@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.util.EventUtil;
+import tokyo.ramune.savannacore.utility.EventUtil;
 
 public class Gun {
     public Gun() {

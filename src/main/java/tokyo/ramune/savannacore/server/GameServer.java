@@ -1,19 +1,20 @@
-package tokyo.ramune.savannacore.general;
+package tokyo.ramune.savannacore.server;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.gamemode.GameMode;
-import tokyo.ramune.savannacore.util.EventUtil;
+import tokyo.ramune.savannacore.gamemode.FreeForAll;
+import tokyo.ramune.savannacore.gamemode.GameModeHandler;
+import tokyo.ramune.savannacore.utility.EventUtil;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public final class Game {
+public final class GameServer {
     private final Set<Player> joinedPlayers = new HashSet<>();
-    private GameMode currentGameMode = null;
+    private final GameModeHandler gameModeHandler = new GameModeHandler(Set.of(new FreeForAll()));
 
-    public Game() {
+    public GameServer() {
         EventUtil.register(
                 SavannaCore.getPlugin(SavannaCore.class),
                 new PlayerJoinQuitListener()
@@ -24,12 +25,8 @@ public final class Game {
         return joinedPlayers;
     }
 
-    public GameMode getCurrentGameMode() {
-        return currentGameMode;
-    }
-
-    public void setCurrentGameMode(GameMode curretGameMode) {
-        this.currentGameMode = curretGameMode;
+    public GameModeHandler getGameModeHandler() {
+        return gameModeHandler;
     }
 
     private final static class PlayerJoinQuitListener implements Listener {

@@ -1,4 +1,4 @@
-package tokyo.ramune.savannacore.util;
+package tokyo.ramune.savannacore.utility;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

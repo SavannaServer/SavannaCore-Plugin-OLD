@@ -1,12 +1,13 @@
 package tokyo.ramune.savannacore.gamemode;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import tokyo.ramune.savannacore.SavannaCore;
+import tokyo.ramune.savannacore.gamemode.event.GameModeEndEvent;
+import tokyo.ramune.savannacore.gamemode.event.GameModeStartEvent;
+import tokyo.ramune.savannacore.gamemode.event.GameModeUpdateEvent;
+import tokyo.ramune.savannacore.utility.EventUtil;
 
 import javax.annotation.Nonnull;
 
@@ -41,18 +42,25 @@ public class GameMode {
 
     public void onLoad() {
         startTimer();
+        EventUtil.callEvent(new GameModeStartEvent(this));
     }
 
     public void onUnload() {
+        EventUtil.callEvent(new GameModeEndEvent(this));
     }
 
     public void onUpdate() {
+        EventUtil.callEvent(new GameModeUpdateEvent(this));
     }
 
     public void onJoin(@Nonnull Player player) {
     }
 
     public void onQuit(@Nonnull Player player) {
+    }
+
+    public boolean isEnded() {
+        return currentTime <= 0;
     }
 
     private void startTimer() {
@@ -70,12 +78,5 @@ public class GameMode {
                 onUpdate();
             }
         }.runTaskTimer(SavannaCore.getPlugin(SavannaCore.class), 20, 20);
-    }
-
-    private final static class PlayerJoinQuitListener implements Listener {
-        @EventHandler
-        public void onPlayerJoin(final PlayerJoinEvent event) {
-
-        }
     }
 }

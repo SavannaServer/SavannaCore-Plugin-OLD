@@ -7,18 +7,26 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.util.EventUtil;
-import tokyo.ramune.savannacore.util.SoundUtil;
+import tokyo.ramune.savannacore.asset.SoundAssets;
+import tokyo.ramune.savannacore.utility.EventUtil;
+import tokyo.ramune.savannacore.utility.Util;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public final class GameOverPhase extends GameMode {
+    private final Map<GameMode, Integer> gameModeVotes;
     private final Set<Player> nonGravityPlayers = new HashSet<>();
 
-    public GameOverPhase() {
+    public GameOverPhase(@Nonnull Set<GameMode> gameModes) {
         super("Game Over", 15);
+        this.gameModeVotes = new HashMap<>();
+        for (GameMode gameMode : gameModes) {
+            gameModeVotes.put(gameMode, 0);
+        }
     }
 
     @Override
@@ -26,7 +34,7 @@ public final class GameOverPhase extends GameMode {
         super.onLoad();
         EventUtil.register(SavannaCore.getPlugin(SavannaCore.class), new NoMoveListener());
 
-        Bukkit.getOnlinePlayers().forEach(SoundUtil::gameOver);
+        Bukkit.getOnlinePlayers().forEach(SoundAssets.GAME_OVER::play);
     }
 
     @Override
@@ -37,6 +45,11 @@ public final class GameOverPhase extends GameMode {
         for (Player player : nonGravityPlayers) {
             player.setGravity(true);
         }
+
+        SavannaCore.getPlugin(SavannaCore.class)
+                .getGameServer()
+                .getGameModeHandler()
+                .setGameMode(Util.detectGameMode(Map.of(new FreeForAll(), 1)));
     }
 
     @Override
@@ -65,6 +78,7 @@ public final class GameOverPhase extends GameMode {
                 player.setGravity(false);
                 nonGravityPlayers.add(player);
             }
+            player.setVelocity(player.getVelocity());
             event.setTo(event.getFrom().setDirection(event.getTo().getDirection()));
         }
     }

@@ -1,4 +1,4 @@
-package tokyo.ramune.savannacore.general;
+package tokyo.ramune.savannacore.server;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -8,14 +8,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.util.ChatUtil;
-import tokyo.ramune.savannacore.util.EventUtil;
+import tokyo.ramune.savannacore.utility.ChatUtil;
+import tokyo.ramune.savannacore.utility.EventUtil;
 
-public final class Lobby {
+public final class LobbyServer {
     private Location spawnLocation = null;
     private boolean forceSpawnLocation = false;
 
-    public Lobby() {
+    public LobbyServer() {
         EventUtil.register(
                 SavannaCore.getPlugin(SavannaCore.class),
                 new ForceSpawnLocationListener(),

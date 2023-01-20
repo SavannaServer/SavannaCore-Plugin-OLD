@@ -1,4 +1,4 @@
-package tokyo.ramune.savannacore.util;
+package tokyo.ramune.savannacore.utility;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

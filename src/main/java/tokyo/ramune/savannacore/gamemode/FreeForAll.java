@@ -3,7 +3,6 @@ package tokyo.ramune.savannacore.gamemode;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import tokyo.ramune.savannacore.SavannaCore;
 
 public final class FreeForAll extends GameMode {
     public FreeForAll() {
@@ -18,7 +17,6 @@ public final class FreeForAll extends GameMode {
     @Override
     public void onUnload() {
         super.onUnload();
-        SavannaCore.getPlugin(SavannaCore.class).getGame().setCurrentGameMode(new GameOverPhase());
     }
 
     @Override

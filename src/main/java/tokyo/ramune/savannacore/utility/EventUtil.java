@@ -1,6 +1,7 @@
-package tokyo.ramune.savannacore.util;
+package tokyo.ramune.savannacore.utility;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredListener;
@@ -24,5 +25,9 @@ public final class EventUtil {
                 }
             }
         }
+    }
+
+    public static void callEvent(@Nonnull Event event) {
+        Bukkit.getPluginManager().callEvent(event);
     }
 }

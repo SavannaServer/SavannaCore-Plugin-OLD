@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.util.EventUtil;
+import tokyo.ramune.savannacore.utility.EventUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

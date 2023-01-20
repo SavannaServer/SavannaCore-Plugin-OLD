@@ -16,9 +16,9 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.util.CommandUtil;
-import tokyo.ramune.savannacore.util.EventUtil;
-import tokyo.ramune.savannacore.util.SoundUtil;
+import tokyo.ramune.savannacore.asset.SoundAssets;
+import tokyo.ramune.savannacore.utility.CommandUtil;
+import tokyo.ramune.savannacore.utility.EventUtil;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -243,7 +243,7 @@ public final class PhysicsHandler {
             PhysicsHandler.instance.apply(targetPlayer, true);
             CommandUtil.success(sender);
             targetPlayer.sendMessage(ChatColor.GREEN + "Physics enabled!");
-            SoundUtil.success(targetPlayer);
+            SoundAssets.SUCCESS.play(targetPlayer);
             return true;
         }
     }
@@ -273,7 +273,7 @@ public final class PhysicsHandler {
             PhysicsHandler.instance.apply(targetPlayer, false);
             CommandUtil.success(sender);
             targetPlayer.sendMessage(ChatColor.RED + "Physics disabled!");
-            SoundUtil.success(targetPlayer);
+            SoundAssets.SUCCESS.play(targetPlayer);
             return true;
         }
     }
