@@ -19,17 +19,17 @@ public final class GameModeHandler {
         this.gameModes = gameModes;
 
         EventUtil.register(
-                SavannaCore.getPlugin(SavannaCore.class),
+                SavannaCore.getInstance(),
                 new GameModeEndListener()
         );
 
         // Detect first game mode
         final List<GameMode> gameModeList = gameModes.stream().toList();
-        currentGameMode = Util.getRandom(gameModeList);
+        setGameMode(Util.getRandom(gameModeList));
     }
 
     public void setGameMode(@Nonnull GameMode gameMode) {
-        if (!currentGameMode.isEnded()) return;
+        if (currentGameMode != null && !currentGameMode.isEnded()) return;
         currentGameMode = gameMode;
         loadGameMode(gameMode);
     }
@@ -45,7 +45,7 @@ public final class GameModeHandler {
 
             if (!currentGameMode.equals(gameMode)) return;
             if (currentGameMode.getClass().equals(GameOverPhase.class)) return;
-            currentGameMode = new GameOverPhase(gameModes);
+            setGameMode(new GameOverPhase(gameModes));
         }
     }
 }

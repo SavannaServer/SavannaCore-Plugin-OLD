@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockReceiveGameEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.asset.SoundAssets;
+import tokyo.ramune.savannacore.asset.SoundAsset;
 import tokyo.ramune.savannacore.utility.EventUtil;
 
 import javax.annotation.Nonnull;
@@ -21,7 +21,7 @@ public final class JumpPadHandler {
     public JumpPadHandler(@Nonnull PhysicsHandler physicsHandler) {
         this.physicsHandler = physicsHandler;
         EventUtil.register(
-                SavannaCore.getPlugin(SavannaCore.class),
+                SavannaCore.getInstance(),
                 new JumpPadListener()
         );
     }
@@ -42,7 +42,7 @@ public final class JumpPadHandler {
             if (jumpPad.getVelocity() <= 0) return;
 
             player.setVelocity(player.getVelocity().multiply(1.3).setY(jumpPad.getVelocity()));
-            SoundAssets.JUMP_PAD.play(player);
+            SoundAsset.JUMP_PAD.play(player);
         }
 
         @EventHandler

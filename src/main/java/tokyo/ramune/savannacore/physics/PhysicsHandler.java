@@ -16,7 +16,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.asset.SoundAssets;
+import tokyo.ramune.savannacore.asset.SoundAsset;
 import tokyo.ramune.savannacore.utility.CommandUtil;
 import tokyo.ramune.savannacore.utility.EventUtil;
 
@@ -34,7 +34,7 @@ public final class PhysicsHandler {
 
         attachedPlayers = new HashSet<>();
         EventUtil.register(
-                SavannaCore.getPlugin(SavannaCore.class),
+                SavannaCore.getInstance(),
                 new PhysicsAutoApplyListener(),
                 new AutoSprintListener(),
                 new SlidingListener(),
@@ -43,7 +43,7 @@ public final class PhysicsHandler {
                 new NoFallDamageListener()
         );
         CommandUtil.register(
-                SavannaCore.getPlugin(SavannaCore.class).getName(),
+                SavannaCore.getInstance().getName(),
                 new EnableCommand(),
                 new DisableCommand()
         );
@@ -73,20 +73,20 @@ public final class PhysicsHandler {
 
     // Auto apply physics joined players.
     private static final class PhysicsAutoApplyListener implements Listener {
-        private final PhysicsHandler physics = instance;
-
         @EventHandler(priority = EventPriority.LOWEST)
         public void onPlayerJoin(PlayerJoinEvent event) {
             final Player player = event.getPlayer();
 
-            physics.apply(player, true);
+            Bukkit.getServer().unloadWorld(player.getWorld(), false);
+
+            instance.apply(player, true);
         }
 
         @EventHandler
         public void onPlayerQuit(PlayerQuitEvent event) {
             final Player player = event.getPlayer();
 
-            physics.apply(player, false);
+            instance.apply(player, false);
         }
     }
 
@@ -243,7 +243,7 @@ public final class PhysicsHandler {
             PhysicsHandler.instance.apply(targetPlayer, true);
             CommandUtil.success(sender);
             targetPlayer.sendMessage(ChatColor.GREEN + "Physics enabled!");
-            SoundAssets.SUCCESS.play(targetPlayer);
+            SoundAsset.SUCCESS.play(targetPlayer);
             return true;
         }
     }
@@ -273,7 +273,7 @@ public final class PhysicsHandler {
             PhysicsHandler.instance.apply(targetPlayer, false);
             CommandUtil.success(sender);
             targetPlayer.sendMessage(ChatColor.RED + "Physics disabled!");
-            SoundAssets.SUCCESS.play(targetPlayer);
+            SoundAsset.SUCCESS.play(targetPlayer);
             return true;
         }
     }

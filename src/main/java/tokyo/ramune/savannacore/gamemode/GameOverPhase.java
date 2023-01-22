@@ -5,9 +5,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.asset.SoundAssets;
+import tokyo.ramune.savannacore.asset.SoundAsset;
+import tokyo.ramune.savannacore.sidebar.SideBarHandler;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
 
@@ -32,21 +34,34 @@ public final class GameOverPhase extends GameMode {
     @Override
     public void onLoad() {
         super.onLoad();
-        EventUtil.register(SavannaCore.getPlugin(SavannaCore.class), new NoMoveListener());
+        EventUtil.register(
+                SavannaCore.getInstance(),
+                new SideBarListener()
+        );
 
-        Bukkit.getOnlinePlayers().forEach(SoundAssets.GAME_OVER::play);
+        Bukkit.getOnlinePlayers().forEach(SoundAsset.GAME_OVER::play);
+
+        final SideBarHandler sideBarHandler = SavannaCore.getInstance().getSideBarHandler();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            final SideBar sideBar = new SideBar(player);
+            sideBarHandler.setSideBar(sideBar);
+            sideBar.show();
+        }
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
-        EventUtil.unregister(new NoMoveListener());
+        EventUtil.unregister(
+                new SideBarListener()
+        );
 
         for (Player player : nonGravityPlayers) {
             player.setGravity(true);
         }
 
-        SavannaCore.getPlugin(SavannaCore.class)
+        SavannaCore.getInstance()
                 .getGameServer()
                 .getGameModeHandler()
                 .setGameMode(Util.detectGameMode(Map.of(new FreeForAll(), 1)));
@@ -60,26 +75,27 @@ public final class GameOverPhase extends GameMode {
         }
     }
 
-    @Override
-    public void onJoin(@Nonnull Player player) {
-        super.onJoin(player);
-    }
-
-    @Override
-    public void onQuit(@Nonnull Player player) {
-        super.onQuit(player);
-    }
-
-    private final class NoMoveListener implements Listener {
+    private final class SideBarListener implements Listener {
         @EventHandler
-        public void onMove(PlayerMoveEvent event) {
+        public void onPlayerJoin(PlayerJoinEvent event) {
             final Player player = event.getPlayer();
-            if (!player.hasGravity()) {
-                player.setGravity(false);
-                nonGravityPlayers.add(player);
-            }
-            player.setVelocity(player.getVelocity());
-            event.setTo(event.getFrom().setDirection(event.getTo().getDirection()));
+            final SideBarHandler sideBarHandler = SavannaCore.getInstance().getSideBarHandler();
+
+            final SideBar sideBar = new SideBar(player);
+            sideBarHandler.setSideBar(sideBar);
+            sideBar.show();
+        }
+    }
+
+    private final class SideBar extends tokyo.ramune.savannacore.sidebar.SideBar {
+        public SideBar(Player player) {
+            super(player, "Savanna");
+
+            addBlankLine();
+            addLine(() -> getClass().getName());
+            addBlankLine();
+            addLine(() -> "Time left:");
+            addLine(() -> Util.formatElapsedTime(getCurrentTime()));
         }
     }
 }

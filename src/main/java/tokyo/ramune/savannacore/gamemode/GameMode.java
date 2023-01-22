@@ -53,12 +53,6 @@ public class GameMode {
         EventUtil.callEvent(new GameModeUpdateEvent(this));
     }
 
-    public void onJoin(@Nonnull Player player) {
-    }
-
-    public void onQuit(@Nonnull Player player) {
-    }
-
     public boolean isEnded() {
         return currentTime <= 0;
     }
@@ -73,10 +67,11 @@ public class GameMode {
                 if (currentTime < 0) {
                     cancel();
                     onUnload();
+                    currentTime = 0;
                     return;
                 }
                 onUpdate();
             }
-        }.runTaskTimer(SavannaCore.getPlugin(SavannaCore.class), 20, 20);
+        }.runTaskTimer(SavannaCore.getInstance(), 20, 20);
     }
 }

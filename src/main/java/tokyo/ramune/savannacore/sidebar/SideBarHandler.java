@@ -1,10 +1,12 @@
 package tokyo.ramune.savannacore.sidebar;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitTask;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.utility.EventUtil;
 
@@ -12,49 +14,76 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class SideBarHandler {
-    private final Set<SideBar> sideBars = new HashSet<>();
+    private Set<SideBar> sideBars = new HashSet<>();
+    private BukkitTask updateTimer;
 
     public SideBarHandler() {
-        EventUtil.register(
-                SavannaCore.getPlugin(SavannaCore.class),
-                new SideBarInitializeListener()
-        );
+        startUpdateTimer();
+    }
+
+    private void startUpdateTimer() {
+        if (updateTimer == null || updateTimer.isCancelled())
+            updateTimer = Bukkit.getScheduler().runTaskTimerAsynchronously(
+                    SavannaCore.getInstance(),
+                    this::updateAll,
+                    20, 5
+            );
+    }
+
+    @Nullable
+    public SideBar getCurrentSideBar(Player player) {
+        try {
+            return sideBars.stream()
+                    .filter(sidebar -> sidebar.getPlayer().equals(player))
+                    .findFirst()
+                    .orElse(null);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
+    public Set<SideBar> getSideBars() {
+        return sideBars;
     }
 
     @Nullable
     public SideBar getSideBar(@Nonnull Player player) {
-        return sideBars.stream()
-                .filter(sideBar -> sideBar.getPlayer().equals(player))
-                .findFirst()
-                .orElse(null);
+        for (SideBar sideBar : sideBars) {
+            if (sideBar.getPlayer().equals(player)) return sideBar;
+        }
+        return null;
     }
 
-    public SideBarHandler remove(@Nonnull Player player) {
-        final SideBar existsSideBar = getSideBar(player);
-        if (existsSideBar != null) {
-            existsSideBar.remove();
-            sideBars.remove(existsSideBar);
-        }
+    public void setSideBar(SideBar instance) {
+        remove(instance.getPlayer());
 
-        return this;
+        sideBars.add(instance);
     }
 
-    private final class SideBarInitializeListener implements Listener {
-        @EventHandler
-        public void onPlayerJoin(PlayerJoinEvent event) {
-            final Player player = event.getPlayer();
+    public void updateVisible(@Nonnull Player player) {
+        SideBar sideBar = getCurrentSideBar(player);
 
-            remove(player);
-            sideBars.add(new SideBar(player, ""));
+        if (sideBar == null) return;
+    }
+
+    private void updateAll() {
+        sideBars.forEach(SideBar::update);
+    }
+
+    public void remove(Player player) {
+        for (SideBar sideBar : sideBars) {
+            if (sideBar.getPlayer().equals(player)) {
+                sideBar.remove();
+                sideBars.remove(sideBar);
+                return;
+            }
         }
+    }
 
-        @EventHandler
-        public void onPlayerQuit(PlayerQuitEvent event) {
-            final Player player = event.getPlayer();
-
-            remove(player);
-        }
+    public void removeAll() {
+        sideBars = new HashSet<>();
     }
 }

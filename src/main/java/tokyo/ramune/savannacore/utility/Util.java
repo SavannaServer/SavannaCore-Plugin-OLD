@@ -1,20 +1,49 @@
 package tokyo.ramune.savannacore.utility;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.gamemode.GameMode;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 
 public final class Util {
+    public static String formatElapsedTime(int seconds) {
+
+        String sPlural = (seconds == 1 ? "" : "s");
+
+        if (seconds < 60)
+            return seconds + " second" + sPlural;
+
+        int s = (seconds % 60);
+        sPlural = (seconds == 1 ? "" : "s");
+        int m = seconds / 60;
+        String mPlural = (m == 1 ? "" : "s");
+
+        return m + " minute" + mPlural
+                + (s > 0 ? (", " + s + " second" + sPlural) : "");
+
+    }
+
+    public static DBObject toObject(Map<String, Object> objectMap) {
+        final DBObject object = new BasicDBObject();
+        for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
+            object.put(entry.getKey(), entry.getValue());
+        }
+        return object;
+    }
+
     public static <T> T getRandom(List<T> list) {
         final Random random = new Random();
         int index = random.nextInt(list.size());
         return list.get(index);
     }
 
-    public static Location getSafeSpawnPoint(@Nonnull Set<Location> spawnPoints, @Nonnull Set<Player> avoidPlayers) {
+    public static Location getSafeSpawnPoint(@Nonnull Collection<Location> spawnPoints, @Nonnull Collection<Player> avoidPlayers) {
         final Map<Location, Double> playersDistances = new HashMap<>();
 
         for (Location spawnPoint : spawnPoints) {
@@ -27,6 +56,14 @@ public final class Util {
         final Map.Entry<Location, Double> maxEntry = Collections.max(playersDistances.entrySet(), Map.Entry.comparingByValue());
 
         return maxEntry.getKey();
+    }
+
+    public static List<Location> toLocations(@Nonnull Collection<Vector> vectors, @Nonnull World world) {
+        final List<Location> locations = new ArrayList<>();
+        for (Vector vector : vectors) {
+            locations.add(vector.toLocation(world));
+        }
+        return locations;
     }
 
     public static GameMode detectGameMode(@Nonnull Map<GameMode, Integer> gameModeVotes) {

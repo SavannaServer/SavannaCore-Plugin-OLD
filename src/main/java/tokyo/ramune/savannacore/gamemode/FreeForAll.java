@@ -3,6 +3,15 @@ package tokyo.ramune.savannacore.gamemode;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import tokyo.ramune.savannacore.SavannaCore;
+import tokyo.ramune.savannacore.asset.NormalWorld;
+import tokyo.ramune.savannacore.sidebar.SideBarHandler;
+import tokyo.ramune.savannacore.utility.EventUtil;
+import tokyo.ramune.savannacore.utility.Util;
 
 public final class FreeForAll extends GameMode {
     public FreeForAll() {
@@ -12,11 +21,28 @@ public final class FreeForAll extends GameMode {
     @Override
     public void onLoad() {
         super.onLoad();
+
+        final SideBarHandler sideBarHandler = SavannaCore.getInstance().getSideBarHandler();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            final SideBar sideBar = new SideBar(player);
+            sideBarHandler.setSideBar(sideBar);
+            sideBar.show();
+        }
+
+        EventUtil.register(
+                SavannaCore.getInstance(),
+                new SideBarListener()
+        );
+
+        SavannaCore.getInstance().getWorldHandler().load(NormalWorld.TEST);
     }
 
     @Override
     public void onUnload() {
         super.onUnload();
+
+        EventUtil.unregister(new SideBarListener());
     }
 
     @Override
@@ -24,6 +50,30 @@ public final class FreeForAll extends GameMode {
         super.onUpdate();
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.sendActionBar(Component.text(getCurrentTime()));
+        }
+    }
+
+    private final class SideBarListener implements Listener {
+        @EventHandler
+        public void onPlayerJoin(PlayerJoinEvent event) {
+            final Player player = event.getPlayer();
+            final SideBarHandler sideBarHandler = SavannaCore.getInstance().getSideBarHandler();
+
+            final SideBar sideBar = new SideBar(player);
+            sideBarHandler.setSideBar(sideBar);
+            sideBar.show();
+        }
+    }
+
+    private final class SideBar extends tokyo.ramune.savannacore.sidebar.SideBar {
+        public SideBar(Player player) {
+            super(player, "Savanna");
+
+            addBlankLine();
+            addLine(() -> getClass().getName());
+            addBlankLine();
+            addLine(() -> "Time left:");
+            addLine(() -> Util.formatElapsedTime(getCurrentTime()));
         }
     }
 }

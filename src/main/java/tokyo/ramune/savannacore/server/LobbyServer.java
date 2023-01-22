@@ -17,7 +17,7 @@ public final class LobbyServer {
 
     public LobbyServer() {
         EventUtil.register(
-                SavannaCore.getPlugin(SavannaCore.class),
+                SavannaCore.getInstance(),
                 new ForceSpawnLocationListener(),
                 new JoinQuitMessageListener()
         );

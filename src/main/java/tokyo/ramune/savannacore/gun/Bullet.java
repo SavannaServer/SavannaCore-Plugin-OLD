@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.asset.SoundAssets;
+import tokyo.ramune.savannacore.asset.SoundAsset;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -133,7 +133,7 @@ public final class Bullet {
                 event.setCancelled(true);
                 final LivingEntity hitEntity = (LivingEntity) event.getHitEntity();
                 hitEntity.playEffect(EntityEffect.HURT);
-                SoundAssets.HIT.play(bullet.getShooter());
+                SoundAsset.HIT.play(bullet.getShooter());
                 projectile.remove();
                 double damage = hitEntity.getHealth() - bullet.damage;
                 hitEntity.setHealth(damage < 0 ? 0 : damage);
@@ -194,7 +194,7 @@ public final class Bullet {
 
         @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
         private void onProjectileLaunch(ProjectileLaunchEvent event) {
-            final SavannaCore plugin = SavannaCore.getPlugin(SavannaCore.class);
+            final SavannaCore plugin = SavannaCore.getInstance();
             new BukkitRunnable() {
                 @Override
                 public void run() {

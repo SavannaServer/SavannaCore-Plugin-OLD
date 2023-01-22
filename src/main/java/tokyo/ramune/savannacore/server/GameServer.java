@@ -1,7 +1,10 @@
 package tokyo.ramune.savannacore.server;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.CraftItemEvent;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.gamemode.FreeForAll;
 import tokyo.ramune.savannacore.gamemode.GameModeHandler;
@@ -16,8 +19,9 @@ public final class GameServer {
 
     public GameServer() {
         EventUtil.register(
-                SavannaCore.getPlugin(SavannaCore.class),
-                new PlayerJoinQuitListener()
+                SavannaCore.getInstance(),
+                new PlayerJoinQuitListener(),
+                new DisableCraftItemListener()
         );
     }
 
@@ -31,5 +35,13 @@ public final class GameServer {
 
     private final static class PlayerJoinQuitListener implements Listener {
         
+    }
+
+    private final static class DisableCraftItemListener implements Listener {
+        @EventHandler
+        public void onCraftItem(CraftItemEvent event) {
+            event.setCancelled(true);
+            event.setResult(Event.Result.DENY);
+        }
     }
 }

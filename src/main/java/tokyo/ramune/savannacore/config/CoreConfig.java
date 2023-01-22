@@ -26,10 +26,9 @@ public final class CoreConfig extends ConfigFile {
     }
 
     public enum Key {
-        MYSQL_HOST,
-        MYSQL_PORT,
-        MYSQL_USER,
-        MYSQL_PASSWORD,
-        MYSQL_DATABASE
+        DATABASE_HOST,
+        DATABASE_PORT,
+
+        PLAYER_LIMIT
     }
 }

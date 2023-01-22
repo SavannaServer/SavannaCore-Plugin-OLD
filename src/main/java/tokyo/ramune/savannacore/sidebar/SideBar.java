@@ -12,7 +12,7 @@ import org.bukkit.scoreboard.Team;
 import java.util.*;
 import java.util.function.Supplier;
 
-public final class SideBar {
+public class SideBar {
     private final Scoreboard scoreboard;
     private final Objective objective;
     private final Player player;
@@ -21,7 +21,7 @@ public final class SideBar {
 
     public SideBar(Player player, String title) {
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        this.objective = scoreboard.registerNewObjective("SavannaCore.sideBar", "dummy");
+        this.objective = scoreboard.registerNewObjective("SavannaCore.sideBar." + player.getUniqueId(), "dummy");
         this.player = player;
         this.lines = new HashMap<>();
         this.title = title;
@@ -157,5 +157,6 @@ public final class SideBar {
             team.unregister();
         }
         objective.unregister();
+        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 }

@@ -1,1 +1,5 @@
 config:
+  DATABASE_HOST: localhost
+  DATABASE_PORT: 27017
+
+  PLAYER_LIMIT: 8

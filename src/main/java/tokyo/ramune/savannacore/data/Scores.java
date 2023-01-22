@@ -4,9 +4,11 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public final class Scores {
-    private final HashMap<Player, Integer> scores = new HashMap<>();
+    private final Map<Player, Score> scores = new HashMap<>();
     private boolean allowReward = true;
     private int rewardPerScore = 100;
     private int maximumReward = 30;
@@ -14,22 +16,22 @@ public final class Scores {
     public Scores() {
     }
 
-    public HashMap<Player, Integer> getScores() {
+    public Map<Player, Score> getScores() {
         return scores;
     }
 
-    public int getScore(@Nonnull Player player) {
+    public Score getScore(@Nonnull Player player) {
         return scores.get(player);
     }
 
-    public Scores setScore(@Nonnull Player player, int score) {
-        scores.put(player, score);
-        return this;
+    public void setScore(@Nonnull Score score) {
+
     }
 
     public int getReward(@Nonnull Player player) {
         if (!allowReward) return 0;
-        return Math.min(getScore(player) / rewardPerScore, maximumReward);
+        return 0;
+        //return Math.min(getScore(player).score() / rewardPerScore, maximumReward);
     }
 
     public boolean isAllowReward() {

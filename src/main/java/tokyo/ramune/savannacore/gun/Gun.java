@@ -13,7 +13,7 @@ import tokyo.ramune.savannacore.utility.EventUtil;
 public class Gun {
     public Gun() {
         EventUtil.register(
-                SavannaCore.getPlugin(SavannaCore.class),
+                SavannaCore.getInstance(),
                 new ThrowBulletListener(),
                 new Bullet.BulletHitListener(),
                 new Bullet.BulletMoveEventListener(),
