@@ -3,3 +3,5 @@ config:
   DATABASE_PORT: 27017
 
   PLAYER_LIMIT: 8
+
+  DEBUG_MODE: false

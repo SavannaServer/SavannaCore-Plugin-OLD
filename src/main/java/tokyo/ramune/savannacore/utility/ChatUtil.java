@@ -2,6 +2,7 @@ package tokyo.ramune.savannacore.utility;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 
 public final class ChatUtil {
     private static final RateLimiter<CommandSender> RATE_LIMITER = new RateLimiter<>(1);
@@ -27,5 +28,9 @@ public final class ChatUtil {
             return;
 
         sendMessage(sender, message, addPrefix);
+    }
+
+    public static void requirePremission(CommandSender sender, Permission permission) {
+        sendMessage(sender, "§cYou need the permission of " + permission.getName() + " to do that.", true);
     }
 }

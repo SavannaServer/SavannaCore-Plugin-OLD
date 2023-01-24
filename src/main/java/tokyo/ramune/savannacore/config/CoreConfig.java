@@ -29,6 +29,8 @@ public final class CoreConfig extends ConfigFile {
         DATABASE_HOST,
         DATABASE_PORT,
 
-        PLAYER_LIMIT
+        PLAYER_LIMIT,
+
+        DEBUG_MODE
     }
 }

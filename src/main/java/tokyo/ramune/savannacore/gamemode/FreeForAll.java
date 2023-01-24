@@ -6,12 +6,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.asset.NormalWorld;
 import tokyo.ramune.savannacore.sidebar.SideBarHandler;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
+import tokyo.ramune.savannacore.world.SavannaWorld;
 
 public final class FreeForAll extends GameMode {
     public FreeForAll() {
@@ -35,7 +34,7 @@ public final class FreeForAll extends GameMode {
                 new SideBarListener()
         );
 
-        SavannaCore.getInstance().getWorldHandler().load(NormalWorld.TEST);
+        SavannaCore.getInstance().getWorldHandler().load(new SavannaWorld("test"));
     }
 
     @Override

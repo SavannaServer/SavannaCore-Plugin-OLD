@@ -14,6 +14,12 @@ public final class CommandUtil {
         }
     }
 
+    public static void unregister(Command... commands) {
+        for (Command command : commands) {
+            command.unregister(Bukkit.getCommandMap());
+        }
+    }
+
     public static void mismatchSender(@Nonnull CommandSender sender) {
         sender.sendMessage(ChatColor.RED + "You can't execute this command from here.");
     }

@@ -29,7 +29,9 @@ public final class GameModeHandler {
     }
 
     public void setGameMode(@Nonnull GameMode gameMode) {
-        if (currentGameMode != null && !currentGameMode.isEnded()) return;
+        if (currentGameMode != null && !currentGameMode.isEnded()) {
+            currentGameMode.onUnload();
+        }
         currentGameMode = gameMode;
         loadGameMode(gameMode);
     }

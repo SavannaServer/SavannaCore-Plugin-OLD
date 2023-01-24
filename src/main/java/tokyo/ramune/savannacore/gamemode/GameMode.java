@@ -1,6 +1,5 @@
 package tokyo.ramune.savannacore.gamemode;
 
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import tokyo.ramune.savannacore.SavannaCore;
@@ -46,6 +45,7 @@ public class GameMode {
     }
 
     public void onUnload() {
+        stopTimer();
         EventUtil.callEvent(new GameModeEndEvent(this));
     }
 
@@ -73,5 +73,11 @@ public class GameMode {
                 onUpdate();
             }
         }.runTaskTimer(SavannaCore.getInstance(), 20, 20);
+    }
+
+    private void stopTimer() {
+        if (timerTask == null) return;
+        timerTask.cancel();
+        timerTask = null;
     }
 }

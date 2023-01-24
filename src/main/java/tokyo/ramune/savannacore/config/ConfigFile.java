@@ -23,6 +23,24 @@ public class ConfigFile {
         configFile = new File(plugin.getDataFolder(), file);
     }
 
+    public ConfigFile(Plugin plugin, File parent, String fileName) {
+        this.plugin = plugin;
+        this.file = fileName;
+        configFile = new File(parent, file);
+    }
+
+    public File getConfigFile() {
+        return configFile;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public Plugin getPlugin() {
+        return plugin;
+    }
+
     public void saveDefaultConfig() {
         if (!configFile.exists()) {
             plugin.saveResource(file, false);
