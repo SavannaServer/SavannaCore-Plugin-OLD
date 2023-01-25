@@ -5,10 +5,44 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import tokyo.ramune.savannacore.SavannaCore;
+import tokyo.ramune.savannacore.command.Command;
+import tokyo.ramune.savannacore.utility.CommandUtil;
+import tokyo.ramune.savannacore.utility.EventUtil;
+import tokyo.ramune.savannacore.world.SavannaWorld;
 
 public final class DebugHandler {
     private boolean enabled = false;
     public DebugHandler() {
+        EventUtil.register(
+                SavannaCore.getInstance(),
+                new DisablePlayerLogin()
+        );
+        new Command(
+                "get-worlds",
+                args -> {
+                    for (SavannaWorld world : SavannaCore.getInstance().getWorldHandler().getWorlds()) {
+                        args.getSender().sendMessage(world.getName());
+                    }
+                    return true;
+                },
+                SavannaCore.Permission.DEBUG_COMMAND.toPermission()
+        ).register();
+        new Command(
+                "tp-world",
+                args -> {
+                    if (!(args.getSender() instanceof Player player)) {
+                        CommandUtil.mismatchSender(args.getSender());
+                        return false;
+                    }
+                    try {
+                        player.teleport(new SavannaWorld(args.getArgs()[0]).getSpawnLocations().get(0));
+                    } catch (Exception ignored) {
+                    }
+                    return true;
+                },
+                SavannaCore.Permission.DEBUG_COMMAND.toPermission()
+        ).register();
     }
 
     public void enable() {

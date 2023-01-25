@@ -1,5 +1,8 @@
 package tokyo.ramune.savannacore;
 
+import org.bukkit.Bukkit;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
 import tokyo.ramune.savannacore.config.CoreConfig;
 import tokyo.ramune.savannacore.database.DatabaseHandler;
@@ -28,6 +31,8 @@ public final class SavannaCore extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+        Permission.register();
+
         config = new CoreConfig(this);
         database = new DatabaseHandler();
         worldHandler = new WorldHandler();
@@ -39,10 +44,9 @@ public final class SavannaCore extends JavaPlugin {
         );
         physics = new PhysicsHandler();
         debugHandler = new DebugHandler();
+
         if (config.value(CoreConfig.Key.DEBUG_MODE, Boolean.class, false)) debugHandler.enable();
-        if (!isEnabled()) {
-            gameServer = new GameServer();
-        }
+        if (!debugHandler.isEnabled()) gameServer = new GameServer();
 
         getLogger().info("The plugin has been enabled.");
     }
@@ -75,5 +79,24 @@ public final class SavannaCore extends JavaPlugin {
 
     public GameServer getGameServer() {
         return gameServer;
+    }
+
+    public enum Permission {
+        DEBUG_COMMAND(PermissionDefault.OP);
+        private static void register() {
+            for (Permission permission : values()) {
+                Bukkit.getPluginManager().addPermission(permission.toPermission());
+            }
+        }
+
+        private final PermissionDefault def;
+
+        Permission(PermissionDefault def) {
+            this.def = def;
+        }
+
+        public org.bukkit.permissions.Permission toPermission() {
+            return new org.bukkit.permissions.Permission(name().toLowerCase(), def);
+        }
     }
 }

@@ -12,6 +12,7 @@ import tokyo.ramune.savannacore.asset.SoundAsset;
 import tokyo.ramune.savannacore.sidebar.SideBarHandler;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
+import tokyo.ramune.savannacore.world.SavannaWorld;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public final class GameOverPhase extends GameMode {
     private final Set<Player> nonGravityPlayers = new HashSet<>();
 
     public GameOverPhase(@Nonnull Set<GameMode> gameModes) {
-        super("Game Over", 15);
+        super("Game Over", 15, null);
         this.gameModeVotes = new HashMap<>();
         for (GameMode gameMode : gameModes) {
             gameModeVotes.put(gameMode, 0);
@@ -60,11 +61,12 @@ public final class GameOverPhase extends GameMode {
         for (Player player : nonGravityPlayers) {
             player.setGravity(true);
         }
+        final SavannaWorld world = Util.getRandom(SavannaCore.getInstance().getWorldHandler().getWorlds());
 
         SavannaCore.getInstance()
                 .getGameServer()
                 .getGameModeHandler()
-                .setGameMode(Util.detectGameMode(Map.of(new FreeForAll(), 1)));
+                .setGameMode(Util.detectGameMode(Map.of(new FreeForAll(world), 1)));
     }
 
     @Override

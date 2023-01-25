@@ -6,6 +6,8 @@ import org.bukkit.generator.ChunkGenerator;
 import tokyo.ramune.savannacore.utility.Util;
 
 import javax.annotation.Nonnull;
+import java.io.File;
+import java.nio.file.Files;
 import java.util.*;
 
 public final class WorldHandler {
@@ -80,6 +82,17 @@ public final class WorldHandler {
         world.setGameRule(GameRule.NATURAL_REGENERATION, false);
         world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false);
         world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
+    }
+
+    public List<SavannaWorld> getWorlds() {
+        final List<SavannaWorld> worlds = new ArrayList<>();
+
+        for (File file : Objects.requireNonNull(new File("./").listFiles())) {
+            if (!file.getName().startsWith("sa.")) continue;
+            worlds.add(new SavannaWorld(file.getName()));
+        }
+
+        return worlds;
     }
 
     private final static class EmptyChunkGenerator extends ChunkGenerator {

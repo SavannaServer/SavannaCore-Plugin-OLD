@@ -14,15 +14,15 @@ public final class CoreConfig extends ConfigFile {
     }
 
     public <T> T value(@Nonnull Key key, @Nonnull Class<T> typeClass) {
-        return getConfig().getObject(key.name(), typeClass);
+        return getConfig().getObject("config." + key.name(), typeClass);
     }
 
     public <T> T value(@Nonnull Key key, @Nonnull Class<T> typeClass, T def) {
-        return getConfig().getObject(key.name(), typeClass, def);
+        return getConfig().getObject("config." + key.name(), typeClass, def);
     }
 
     public void value(@Nonnull Key key, @Nonnull Object value) {
-        getConfig().set(key.name(), value);
+        getConfig().set("config." + key.name(), value);
     }
 
     public enum Key {

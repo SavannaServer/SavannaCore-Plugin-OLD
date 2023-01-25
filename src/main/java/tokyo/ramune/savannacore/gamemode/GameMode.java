@@ -7,20 +7,24 @@ import tokyo.ramune.savannacore.gamemode.event.GameModeEndEvent;
 import tokyo.ramune.savannacore.gamemode.event.GameModeStartEvent;
 import tokyo.ramune.savannacore.gamemode.event.GameModeUpdateEvent;
 import tokyo.ramune.savannacore.utility.EventUtil;
+import tokyo.ramune.savannacore.world.SavannaWorld;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class GameMode {
     private final String name;
     private final int time;
+    private final SavannaWorld world;
 
     private BukkitTask timerTask;
     private int currentTime;
 
-    public GameMode(@Nonnull String name, int time) {
+    public GameMode(@Nonnull String name, int time, @Nullable SavannaWorld world) {
         this.name = name;
         if (time < 0) throw new IllegalArgumentException("Time must be positive");
         this.time = time;
+        this.world = world == null ? SavannaCore.getInstance().getGameServer().getGameModeHandler().getCurrentGameMode().getWorld() : world;
     }
 
     public final String getName() {
@@ -29,6 +33,10 @@ public class GameMode {
 
     public final int getTime() {
         return time;
+    }
+
+    public SavannaWorld getWorld() {
+        return world;
     }
 
     public final int getCurrentTime() {
@@ -40,11 +48,13 @@ public class GameMode {
     }
 
     public void onLoad() {
+        SavannaCore.getInstance().getWorldHandler().load(world);
         startTimer();
         EventUtil.callEvent(new GameModeStartEvent(this));
     }
 
     public void onUnload() {
+        SavannaCore.getInstance().getWorldHandler().unload(world);
         stopTimer();
         EventUtil.callEvent(new GameModeEndEvent(this));
     }

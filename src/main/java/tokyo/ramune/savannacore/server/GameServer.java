@@ -6,16 +6,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.gamemode.FreeForAll;
 import tokyo.ramune.savannacore.gamemode.GameModeHandler;
 import tokyo.ramune.savannacore.utility.EventUtil;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 public final class GameServer {
     private final Set<Player> joinedPlayers = new HashSet<>();
-    private final GameModeHandler gameModeHandler = new GameModeHandler(Set.of(new FreeForAll()));
+    private final GameModeHandler gameModeHandler = new GameModeHandler(new ArrayList<>());
 
     public GameServer() {
         EventUtil.register(

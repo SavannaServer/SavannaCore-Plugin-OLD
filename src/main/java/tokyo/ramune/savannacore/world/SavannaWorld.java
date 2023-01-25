@@ -18,7 +18,7 @@ public final class SavannaWorld {
     private final WorldConfig config;
 
     public SavannaWorld(@Nonnull String name) {
-        if (!new File("./" + name).exists()) throw new IllegalArgumentException("The world folder with that name doesn't exist.");
+        if (name.startsWith("sa.") || !new File("./" + name).exists()) throw new IllegalArgumentException("The world folder with that name doesn't exist.");
         this.name = name;
         this.config = new WorldConfig(name);
         config.saveDefaultConfig();

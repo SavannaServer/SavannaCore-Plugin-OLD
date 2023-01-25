@@ -12,9 +12,11 @@ import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
 import tokyo.ramune.savannacore.world.SavannaWorld;
 
+import javax.annotation.Nonnull;
+
 public final class FreeForAll extends GameMode {
-    public FreeForAll() {
-        super("FFA", 10);
+    public FreeForAll(@Nonnull SavannaWorld world) {
+        super("FFA", 10, world);
     }
 
     @Override
