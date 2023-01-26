@@ -6,10 +6,12 @@ import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.gamemode.event.GameModeEndEvent;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
-import tokyo.ramune.savannacore.world.SavannaWorld;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public final class GameModeHandler {
     private final List<Class<GameMode>> ignoreGameModes;
@@ -24,21 +26,15 @@ public final class GameModeHandler {
         );
 
         // Detect first game mode
-        final List<GameMode> gameModeList = getNormalGameModes().stream()
-                .filter(gameMode -> !ignoreGameModes.contains(gameMode.getClass()))
-                .toList();
-        setGameMode(Util.getRandom(gameModeList));
+        loadGameMode(Util.getRandom(getNormalGameModes()), Util.getRandom(SavannaCore.getInstance().getWorldHandler().getWorldNames()));
     }
 
-    public void setGameMode(@Nonnull GameMode gameMode) {
+    protected void loadGameMode(@Nonnull GameMode gameMode, @Nonnull String worldName) {
         if (currentGameMode != null && !currentGameMode.isEnded()) {
             currentGameMode.onUnload();
         }
+        SavannaCore.getInstance().getWorldHandler().load(worldName);
         currentGameMode = gameMode;
-        loadGameMode(gameMode);
-    }
-
-    private void loadGameMode(@Nonnull GameMode gameMode) {
         gameMode.onLoad();
     }
 
@@ -48,12 +44,8 @@ public final class GameModeHandler {
 
     public List<GameMode> getNormalGameModes() {
         return Arrays.asList(
-                new FreeForAll(getRandomWorld())
+                new FreeForAll()
         );
-    }
-
-    private SavannaWorld getRandomWorld() {
-        return Util.getRandom(SavannaCore.getInstance().getWorldHandler().getWorlds());
     }
 
     private final class GameModeEndListener implements Listener {
@@ -68,12 +60,12 @@ public final class GameModeHandler {
                 gameModes.add(
                         Util.getRandom(
                                 getNormalGameModes().stream()
-                                .filter(gm -> !ignoreGameModes.contains(gm.getClass()))
-                                .toList()
+                                        .filter(gm -> !ignoreGameModes.contains(gm.getClass()))
+                                        .toList()
                         )
                 );
             }
-            setGameMode(new GameOverPhase(gameModes));
+            loadGameMode(new GameOverPhase(), "sa.vote");
         }
     }
 }

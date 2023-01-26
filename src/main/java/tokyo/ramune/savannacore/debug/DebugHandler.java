@@ -9,10 +9,10 @@ import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.command.Command;
 import tokyo.ramune.savannacore.utility.CommandUtil;
 import tokyo.ramune.savannacore.utility.EventUtil;
-import tokyo.ramune.savannacore.world.SavannaWorld;
 
 public final class DebugHandler {
     private boolean enabled = false;
+
     public DebugHandler() {
         EventUtil.register(
                 SavannaCore.getInstance(),
@@ -21,8 +21,8 @@ public final class DebugHandler {
         new Command(
                 "get-worlds",
                 args -> {
-                    for (SavannaWorld world : SavannaCore.getInstance().getWorldHandler().getWorlds()) {
-                        args.getSender().sendMessage(world.getName());
+                    for (String name : SavannaCore.getInstance().getWorldHandler().getWorldNames()) {
+                        args.getSender().sendMessage(name);
                     }
                     return true;
                 },
@@ -36,7 +36,7 @@ public final class DebugHandler {
                         return false;
                     }
                     try {
-                        player.teleport(new SavannaWorld(args.getArgs()[0]).getSpawnLocations().get(0));
+                        player.teleport(SavannaCore.getInstance().getWorldHandler().load(args.getArgs()[0]).getWorld().getSpawnLocation());
                     } catch (Exception ignored) {
                     }
                     return true;

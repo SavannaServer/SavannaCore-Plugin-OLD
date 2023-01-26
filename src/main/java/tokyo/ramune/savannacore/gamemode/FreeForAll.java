@@ -10,13 +10,10 @@ import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.sidebar.SideBarHandler;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
-import tokyo.ramune.savannacore.world.SavannaWorld;
-
-import javax.annotation.Nonnull;
 
 public final class FreeForAll extends GameMode {
-    public FreeForAll(@Nonnull SavannaWorld world) {
-        super("FFA", 10, world);
+    public FreeForAll() {
+        super("FFA", 10);
     }
 
     @Override
@@ -35,8 +32,6 @@ public final class FreeForAll extends GameMode {
                 SavannaCore.getInstance(),
                 new SideBarListener()
         );
-
-        SavannaCore.getInstance().getWorldHandler().load(new SavannaWorld("test"));
     }
 
     @Override

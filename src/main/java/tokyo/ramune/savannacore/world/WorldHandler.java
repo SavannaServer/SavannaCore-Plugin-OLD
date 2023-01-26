@@ -7,27 +7,29 @@ import tokyo.ramune.savannacore.utility.Util;
 
 import javax.annotation.Nonnull;
 import java.io.File;
-import java.nio.file.Files;
 import java.util.*;
 
 public final class WorldHandler {
-    private SavannaWorld loadedWorld;
     private final List<WorldObject> objects = new ArrayList<>();
+    private SavannaWorld loadedWorld;
 
     public WorldHandler() {
     }
 
-    public void load(@Nonnull SavannaWorld savannaWorld) {
-        final World world = new WorldCreator(savannaWorld.getName())
+    public SavannaWorld load(@Nonnull String name) {
+        if (!name.startsWith("sa.")) throw new IllegalArgumentException("SavannaWorld name must be start with 'sa.'");
+        final World world = new WorldCreator(name)
                 .type(WorldType.FLAT)
                 .generator(new EmptyChunkGenerator())
                 .generateStructures(false)
                 .createWorld();
 
-        if (world == null) throw new RuntimeException("The " + savannaWorld.getName() + " Couldn't load.");
+        if (world == null) throw new RuntimeException("The world " + name + " Couldn't load.");
+
+        final SavannaWorld savannaWorld = new SavannaWorld(world);
 
         applySettings(world);
-        for (WorldObject object : savannaWorld.getWorldObjects()) {
+        for (WorldObject object : savannaWorld.getDefaultWorldObjects()) {
             object.spawn(savannaWorld);
             objects.add(object);
         }
@@ -38,9 +40,10 @@ public final class WorldHandler {
 
         unload(loadedWorld);
         loadedWorld = savannaWorld;
+        return savannaWorld;
     }
 
-    public void unload(@Nonnull SavannaWorld savannaWorld) {
+    private void unload(@Nonnull SavannaWorld savannaWorld) {
         if (loadedWorld == null) {
             for (Chunk loadedChunk : Bukkit.getWorlds().get(0).getLoadedChunks()) {
                 Bukkit.getWorlds().get(0).unloadChunk(loadedChunk);
@@ -84,12 +87,13 @@ public final class WorldHandler {
         world.setGameRule(GameRule.SPECTATORS_GENERATE_CHUNKS, false);
     }
 
-    public List<SavannaWorld> getWorlds() {
-        final List<SavannaWorld> worlds = new ArrayList<>();
+    public List<String> getWorldNames() {
+        final List<String> worlds = new ArrayList<>();
 
         for (File file : Objects.requireNonNull(new File("./").listFiles())) {
             if (!file.getName().startsWith("sa.")) continue;
-            worlds.add(new SavannaWorld(file.getName()));
+            if (file.getName().equals("sa.vote") || file.getName().equals("sa.lobby")) continue;
+            worlds.add(file.getName());
         }
 
         return worlds;

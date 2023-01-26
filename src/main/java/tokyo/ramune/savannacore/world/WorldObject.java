@@ -1,27 +1,20 @@
 package tokyo.ramune.savannacore.world;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public final class WorldObject {
     private final Vector pos1, pos2;
-    private final WorldObjectEntityCreator<? extends Entity> entityCreator;
     private final int maxHealth;
-    private int health;
     private final Material replaceType;
+    private int health;
+    private SavannaWorld world;
 
-    private Entity spawnedEntity;
-
-    public WorldObject(@Nonnull Vector pos1, @Nonnull Vector pos2, @Nullable WorldObjectEntityCreator<? extends Entity> entityCreator, int maxHealth, @Nonnull Material replaceType) {
+    public WorldObject(@Nonnull Vector pos1, @Nonnull Vector pos2, int maxHealth, @Nonnull Material replaceType) {
         this.pos1 = pos1;
         this.pos2 = pos2;
-        this.entityCreator = entityCreator;
         if (maxHealth <= 0) throw new IllegalArgumentException("maxHealth must be bigger than 0");
         this.maxHealth = maxHealth;
         health = maxHealth;
@@ -54,15 +47,13 @@ public final class WorldObject {
     }
 
     public void spawn(@Nonnull SavannaWorld savannaWorld) {
-        if (entityCreator == null) return;
-
-        final World world = Bukkit.getWorld(savannaWorld.getName());
-        if (world == null) return;
-        spawnedEntity = world.spawn(entityCreator.getLocation().toLocation(world), entityCreator.getClazz());
+        if (world != null) world.removeObject(this);
+        this.world = savannaWorld;
+        savannaWorld.addObject(this);
     }
 
     public void remove() {
-        if (spawnedEntity == null) return;
-        spawnedEntity.remove();
+        if (world == null) return;
+        world.removeObject(this);
     }
 }

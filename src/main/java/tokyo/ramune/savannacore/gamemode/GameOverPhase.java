@@ -6,15 +6,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.asset.SoundAsset;
 import tokyo.ramune.savannacore.sidebar.SideBarHandler;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
-import tokyo.ramune.savannacore.world.SavannaWorld;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -24,12 +21,10 @@ public final class GameOverPhase extends GameMode {
     private final Map<GameMode, Integer> gameModeVotes;
     private final Set<Player> nonGravityPlayers = new HashSet<>();
 
-    public GameOverPhase(@Nonnull Set<GameMode> gameModes) {
-        super("Game Over", 15, null);
+    public GameOverPhase() {
+        super("Game Over", 15);
         this.gameModeVotes = new HashMap<>();
-        for (GameMode gameMode : gameModes) {
-            gameModeVotes.put(gameMode, 0);
-        }
+
     }
 
     @Override
@@ -61,12 +56,12 @@ public final class GameOverPhase extends GameMode {
         for (Player player : nonGravityPlayers) {
             player.setGravity(true);
         }
-        final SavannaWorld world = Util.getRandom(SavannaCore.getInstance().getWorldHandler().getWorlds());
+        final String nextWorldName = Util.getRandom(SavannaCore.getInstance().getWorldHandler().getWorldNames());
 
         SavannaCore.getInstance()
                 .getGameServer()
                 .getGameModeHandler()
-                .setGameMode(Util.detectGameMode(Map.of(new FreeForAll(world), 1)));
+                .loadGameMode(Util.getRandom(SavannaCore.getInstance().getGameServer().getGameModeHandler().getNormalGameModes()), nextWorldName);
     }
 
     @Override

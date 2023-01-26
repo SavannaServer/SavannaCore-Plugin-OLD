@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import tokyo.ramune.savannacore.gamemode.GameMode;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -80,17 +79,17 @@ public final class Util {
         return locations;
     }
 
-    public static GameMode detectGameMode(@Nonnull Map<GameMode, Integer> gameModeVotes) {
+    public static <T> T getVoteResult(@Nonnull Map<T, Integer> gameModeVotes) {
         if (gameModeVotes.isEmpty()) throw new IllegalArgumentException("GameModeVotes must be non empty.");
 
         final int maxVoteCount = Collections.max(gameModeVotes.entrySet(), Map.Entry.comparingByValue()).getValue();
-        final List<GameMode> gameModes = new ArrayList<>();
+        final List<T> values = new ArrayList<>();
 
-        for (Map.Entry<GameMode, Integer> gameModeIntegerEntry : gameModeVotes.entrySet()) {
-            if (gameModeIntegerEntry.getValue() != maxVoteCount) continue;
-            gameModes.add(gameModeIntegerEntry.getKey());
+        for (Map.Entry<T, Integer> entry : gameModeVotes.entrySet()) {
+            if (entry.getValue() != maxVoteCount) continue;
+            values.add(entry.getKey());
         }
-        if (gameModes.size() == 1) return gameModes.get(0);
-        return Util.getRandom(gameModes);
+        if (values.size() == 1) return values.get(0);
+        return Util.getRandom(values);
     }
 }

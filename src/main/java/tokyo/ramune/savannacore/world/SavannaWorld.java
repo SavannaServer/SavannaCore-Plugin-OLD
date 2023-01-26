@@ -1,36 +1,49 @@
 package tokyo.ramune.savannacore.world;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.utility.Util;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public final class SavannaWorld {
-    private final String name;
+    private final World world;
     private final WorldConfig config;
+    private final List<WorldObject> worldObjects = new ArrayList<>();
 
-    public SavannaWorld(@Nonnull String name) {
-        if (name.startsWith("sa.") || !new File("./" + name).exists()) throw new IllegalArgumentException("The world folder with that name doesn't exist.");
-        this.name = name;
-        this.config = new WorldConfig(name);
+    SavannaWorld(@Nonnull World world) {
+        if (!world.getName().startsWith("sa."))
+            throw new IllegalArgumentException("The world folder name must be start with 'sa.'");
+        if (!new File("./" + world.getName()).exists())
+            throw new IllegalArgumentException("The world folder with that name doesn't exist.");
+        this.world = world;
+        this.config = new WorldConfig(world.getName());
         config.saveDefaultConfig();
     }
 
     public String getName() {
-        return name;
+        return world.getName();
     }
 
-    @Nullable
     public World getWorld() {
-        return Bukkit.getWorld(name);
+        return world;
+    }
+
+    void addObject(@Nonnull WorldObject worldObject) {
+        worldObjects.add(worldObject);
+    }
+
+    void removeObject(@Nonnull WorldObject worldObject) {
+        if (!worldObjects.contains(worldObject)) return;
+        worldObjects.remove(worldObject);
+    }
+
+    public List<WorldObject> getWorldObjects() {
+        return worldObjects;
     }
 
     public WorldConfig getConfig() {
@@ -43,7 +56,7 @@ public final class SavannaWorld {
         return Util.toLocations(getWorld(), spawnLocationMap);
     }
 
-    public List<WorldObject> getWorldObjects() {
+    public List<WorldObject> getDefaultWorldObjects() {
         return new ArrayList<>();
         // TODO: 2023/01/24
     }
