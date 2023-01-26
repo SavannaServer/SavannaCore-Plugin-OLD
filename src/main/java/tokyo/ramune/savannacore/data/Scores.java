@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public final class Scores {
     private final Map<Player, Score> scores = new HashMap<>();

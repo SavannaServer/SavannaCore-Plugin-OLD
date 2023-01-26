@@ -1,13 +1,12 @@
 package tokyo.ramune.savannacore.data;
 
-import com.mongodb.*;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Contract;
 import tokyo.ramune.savannacore.SavannaCore;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -23,7 +22,7 @@ public final class PlayerData {
         this.uuid = uuid;
 
         final DBObject player = players.findOne(new BasicDBObject("uuid", uuid));
-        if (player == null)  {
+        if (player == null) {
             initialize();
             return;
         }

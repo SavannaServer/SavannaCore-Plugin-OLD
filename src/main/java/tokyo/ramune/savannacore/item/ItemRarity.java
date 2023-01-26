@@ -13,6 +13,7 @@ public enum ItemRarity {
 
     private final String name;
     private final ChatColor color;
+
     ItemRarity(String name, ChatColor color) {
         this.name = name;
         this.color = color;

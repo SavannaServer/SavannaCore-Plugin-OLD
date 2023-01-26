@@ -34,7 +34,7 @@ public final class GameServer {
     }
 
     private final static class PlayerJoinQuitListener implements Listener {
-        
+
     }
 
     private final static class DisableCraftItemListener implements Listener {

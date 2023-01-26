@@ -8,6 +8,11 @@ import javax.annotation.Nonnull;
 
 public final class GameModeEndEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
+    private final GameMode gameMode;
+
+    public GameModeEndEvent(@Nonnull GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
 
     public static HandlerList getHandlerList() {
         return HANDLERS;
@@ -16,12 +21,6 @@ public final class GameModeEndEvent extends Event {
     @Override
     public @Nonnull HandlerList getHandlers() {
         return HANDLERS;
-    }
-
-    private final GameMode gameMode;
-
-    public GameModeEndEvent(@Nonnull GameMode gameMode) {
-        this.gameMode = gameMode;
     }
 
     public GameMode getGameMode() {

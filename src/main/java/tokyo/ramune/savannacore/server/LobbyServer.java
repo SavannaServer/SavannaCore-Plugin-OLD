@@ -39,21 +39,6 @@ public final class LobbyServer {
         this.forceSpawnLocation = forceSpawnLocation;
     }
 
-    private final class ForceSpawnLocationListener implements Listener {
-        @EventHandler
-        public void onPlayerJoin(PlayerJoinEvent event) {
-            if (!forceSpawnLocation) return;
-            if (spawnLocation == null) return;
-            final Player player = event.getPlayer();
-
-            try {
-                player.teleport(spawnLocation);
-            } catch (Exception e) {
-                ChatUtil.sendMessage(player, "§Internal error: \n" + e, true);
-            }
-        }
-    }
-
     private final static class JoinQuitMessageListener implements Listener {
         @EventHandler
         public void onPlayerJoin(PlayerJoinEvent event) {
@@ -67,6 +52,21 @@ public final class LobbyServer {
             final Player player = event.getPlayer();
 
             event.quitMessage(Component.text("§f[§c-§f] §7" + player.getName() + " quit"));
+        }
+    }
+
+    private final class ForceSpawnLocationListener implements Listener {
+        @EventHandler
+        public void onPlayerJoin(PlayerJoinEvent event) {
+            if (!forceSpawnLocation) return;
+            if (spawnLocation == null) return;
+            final Player player = event.getPlayer();
+
+            try {
+                player.teleport(spawnLocation);
+            } catch (Exception e) {
+                ChatUtil.sendMessage(player, "§Internal error: \n" + e, true);
+            }
         }
     }
 }

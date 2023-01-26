@@ -54,13 +54,13 @@ public class SideBar {
         return lines;
     }
 
-    public SideBar setLine(int index, Supplier<String> line) {
-        lines.put(index, line);
+    public SideBar setLines(Map<Integer, Supplier<String>> lines) {
+        this.lines = lines;
         return this;
     }
 
-    public SideBar setLines(Map<Integer, Supplier<String>> lines) {
-        this.lines = lines;
+    public SideBar setLine(int index, Supplier<String> line) {
+        lines.put(index, line);
         return this;
     }
 

@@ -2,19 +2,13 @@ package tokyo.ramune.savannacore.sidebar;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitTask;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.utility.EventUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public final class SideBarHandler {
     private Set<SideBar> sideBars = new HashSet<>();

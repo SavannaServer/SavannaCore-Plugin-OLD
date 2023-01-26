@@ -69,9 +69,9 @@ public final class Command {
     }
 
     public void unregisterCommand() {
-            org.bukkit.command.Command registeredCommand = Bukkit.getServer().getCommandMap().getCommand(getName());
-            if (registeredCommand == null) return;
-            registeredCommand.unregister(Bukkit.getServer().getCommandMap());
+        org.bukkit.command.Command registeredCommand = Bukkit.getServer().getCommandMap().getCommand(getName());
+        if (registeredCommand == null) return;
+        registeredCommand.unregister(Bukkit.getServer().getCommandMap());
     }
 
     public boolean isRegistered(@Nonnull Command command) {
