@@ -4,16 +4,14 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 import tokyo.ramune.savannacore.physics.PhysicsHandler;
 
 import javax.annotation.Nonnull;
 
 public final class WallJumpListener extends PhysicsListener {
-    public WallJumpListener(@NotNull PhysicsHandler physicsHandler) {
+    public WallJumpListener(@Nonnull PhysicsHandler physicsHandler) {
         super(physicsHandler);
     }
 

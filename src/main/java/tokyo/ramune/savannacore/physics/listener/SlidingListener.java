@@ -5,10 +5,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 import tokyo.ramune.savannacore.physics.PhysicsHandler;
 
 import javax.annotation.Nonnull;
@@ -18,7 +16,7 @@ import java.util.Set;
 public final class SlidingListener extends PhysicsListener {
     private final Set<Player> allowedSlidingPlayers = new HashSet<>();
 
-    public SlidingListener(@NotNull PhysicsHandler physicsHandler) {
+    public SlidingListener(@Nonnull PhysicsHandler physicsHandler) {
         super(physicsHandler);
     }
 

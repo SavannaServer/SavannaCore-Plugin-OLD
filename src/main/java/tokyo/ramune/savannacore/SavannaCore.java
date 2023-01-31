@@ -3,7 +3,6 @@ package tokyo.ramune.savannacore;
 import org.bukkit.Bukkit;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
-import tokyo.ramune.savannacore.command.Command;
 import tokyo.ramune.savannacore.config.CoreConfig;
 import tokyo.ramune.savannacore.database.DatabaseHandler;
 import tokyo.ramune.savannacore.debug.DebugHandler;
@@ -17,12 +16,6 @@ import tokyo.ramune.savannacore.world.WorldHandler;
 public final class SavannaCore extends JavaPlugin {
 
     private static SavannaCore instance;
-
-    public static SavannaCore getInstance() {
-        return instance;
-    }
-
-
     private CoreConfig config;
     private DatabaseHandler database;
     private WorldHandler worldHandler;
@@ -31,6 +24,10 @@ public final class SavannaCore extends JavaPlugin {
     private SavannaItemHandler savannaItemHandler;
     private DebugHandler debugHandler;
     private GameServer gameServer;
+
+    public static SavannaCore getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {

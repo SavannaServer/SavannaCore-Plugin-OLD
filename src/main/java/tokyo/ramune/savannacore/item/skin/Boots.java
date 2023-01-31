@@ -6,5 +6,6 @@ import tokyo.ramune.savannacore.item.SavannaItem;
 import javax.annotation.Nonnull;
 
 public interface Boots extends SavannaItem {
-    @Nonnull SoundAsset getStepSound();
+    @Nonnull
+    SoundAsset getStepSound();
 }

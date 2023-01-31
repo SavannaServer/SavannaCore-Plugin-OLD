@@ -3,7 +3,6 @@ package tokyo.ramune.savannacore.world;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
-import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.utility.Util;
 
 import javax.annotation.Nonnull;

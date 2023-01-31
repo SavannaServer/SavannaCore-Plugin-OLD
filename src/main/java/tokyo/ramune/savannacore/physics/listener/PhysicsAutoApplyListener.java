@@ -6,14 +6,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.jetbrains.annotations.NotNull;
 import tokyo.ramune.savannacore.physics.PhysicsHandler;
 
 import javax.annotation.Nonnull;
 
 public final class PhysicsAutoApplyListener extends PhysicsListener {
 
-    public PhysicsAutoApplyListener(@NotNull PhysicsHandler physicsHandler) {
+    public PhysicsAutoApplyListener(@Nonnull PhysicsHandler physicsHandler) {
         super(physicsHandler);
     }
 

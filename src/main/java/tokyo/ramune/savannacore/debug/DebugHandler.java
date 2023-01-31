@@ -10,10 +10,6 @@ import tokyo.ramune.savannacore.command.Command;
 import tokyo.ramune.savannacore.utility.ChatUtil;
 import tokyo.ramune.savannacore.utility.CommandUtil;
 import tokyo.ramune.savannacore.utility.EventUtil;
-import tokyo.ramune.savannacore.world.SavannaWorld;
-import tokyo.ramune.savannacore.world.WorldHandler;
-
-import java.util.ArrayList;
 
 public final class DebugHandler {
     private boolean enabled = false;

@@ -60,7 +60,8 @@ public final class SideBarHandler {
     public void updateVisible(@Nonnull Player player) {
         SideBar sideBar = getCurrentSideBar(player);
 
-        if (sideBar == null) return;
+        if (sideBar == null) {
+        }
     }
 
     private void updateAll() {

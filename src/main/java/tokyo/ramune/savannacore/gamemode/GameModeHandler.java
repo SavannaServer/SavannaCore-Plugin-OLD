@@ -8,7 +8,6 @@ import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
 
 import javax.annotation.Nonnull;
-import java.nio.file.NoSuchFileException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -35,7 +34,7 @@ public final class GameModeHandler {
         loadGameMode(Util.getRandom(getNormalGameModes()), Util.getRandom(savannaWorlds));
     }
 
-    protected void loadGameMode(@Nonnull GameMode gameMode, @Nonnull String worldName) {
+    void loadGameMode(@Nonnull GameMode gameMode, @Nonnull String worldName) {
         if (currentGameMode != null && !currentGameMode.isEnded()) {
             currentGameMode.onUnload();
         }
@@ -49,7 +48,7 @@ public final class GameModeHandler {
     }
 
     public List<GameMode> getNormalGameModes() {
-        return Arrays.asList(
+        return List.of(
                 new FreeForAll()
         );
     }
