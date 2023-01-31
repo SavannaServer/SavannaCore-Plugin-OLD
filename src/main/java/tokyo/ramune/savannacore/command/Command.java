@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 import tokyo.ramune.savannacore.utility.ChatUtil;
+import tokyo.ramune.savannacore.utility.CommandUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,25 +51,28 @@ public final class Command {
 
     public void register() {
         if (isRegistered(this)) return;
-        Bukkit.getServer().getCommandMap().register(getName(), new org.bukkit.command.Command(getName()) {
-            @Override
-            public boolean execute(@Nonnull CommandSender sender, @Nonnull String commandLabel, @Nonnull String[] args) {
-                if (requirePermission != null && sender.hasPermission(requirePermission)) {
-                    ChatUtil.requirePremission(sender, requirePermission);
-                    return false;
-                }
-                return getOnCommand() != null && getOnCommand().apply(new CommandArgs(sender, args));
-            }
+        CommandUtil.register(
+                getName(),
+                new org.bukkit.command.Command(getName()) {
+                    @Override
+                    public boolean execute(@Nonnull CommandSender sender, @Nonnull String commandLabel, @Nonnull String[] args) {
+                        if (requirePermission != null && !sender.hasPermission(requirePermission)) {
+                            ChatUtil.requirePermission(sender, requirePermission);
+                            return false;
+                        }
+                        return getOnCommand() != null && getOnCommand().apply(new CommandArgs(sender, args));
+                    }
 
-            @Override
-            public @Nonnull List<String> tabComplete(@Nonnull CommandSender sender, @Nonnull String alias, @Nonnull String[] args) throws IllegalArgumentException {
-                if (requirePermission != null && sender.hasPermission(requirePermission)) return new ArrayList<>();
-                return getOnTabComplete() == null ? new ArrayList<>() : getOnTabComplete().apply(new CommandArgs(sender, args));
-            }
-        });
+                    @Override
+                    public @Nonnull List<String> tabComplete(@Nonnull CommandSender sender, @Nonnull String alias, @Nonnull String[] args) throws IllegalArgumentException {
+                        if (requirePermission != null && !sender.hasPermission(requirePermission))
+                            return new ArrayList<>();
+                        return getOnTabComplete() == null ? new ArrayList<>() : getOnTabComplete().apply(new CommandArgs(sender, args));
+                    }
+                });
     }
 
-    public void unregisterCommand() {
+    public void unregister() {
         org.bukkit.command.Command registeredCommand = Bukkit.getServer().getCommandMap().getCommand(getName());
         if (registeredCommand == null) return;
         registeredCommand.unregister(Bukkit.getServer().getCommandMap());

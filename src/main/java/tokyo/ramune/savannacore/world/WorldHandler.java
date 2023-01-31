@@ -3,6 +3,7 @@ package tokyo.ramune.savannacore.world;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
+import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.utility.Util;
 
 import javax.annotation.Nonnull;
@@ -18,6 +19,7 @@ public final class WorldHandler {
 
     public SavannaWorld load(@Nonnull String name) {
         if (!name.startsWith("sa.")) throw new IllegalArgumentException("SavannaWorld name must be start with 'sa.'");
+        if (loadedWorld != null && loadedWorld.getWorld().getName().equals(name)) return loadedWorld;
         final World world = new WorldCreator(name)
                 .type(WorldType.FLAT)
                 .generator(new EmptyChunkGenerator())

@@ -7,8 +7,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.command.Command;
+import tokyo.ramune.savannacore.utility.ChatUtil;
 import tokyo.ramune.savannacore.utility.CommandUtil;
 import tokyo.ramune.savannacore.utility.EventUtil;
+import tokyo.ramune.savannacore.world.SavannaWorld;
+import tokyo.ramune.savannacore.world.WorldHandler;
+
+import java.util.ArrayList;
 
 public final class DebugHandler {
     private boolean enabled = false;
@@ -29,6 +34,21 @@ public final class DebugHandler {
                 SavannaCore.Permission.DEBUG_COMMAND.toPermission()
         ).register();
         new Command(
+                "load-world",
+                args -> {
+                    if (args.getArgs().length > 1 && args.getArgs()[0].isBlank() && !args.getArgs()[0].startsWith("sa.")) {
+                        ChatUtil.sendMessage(args.getSender(), "§cArgs are wrong. example-> /load-world sa.<world-name>", true);
+                        return false;
+                    }
+                    SavannaCore.getInstance().getWorldHandler().load(args.getArgs()[0]);
+                    return true;
+                },
+                args -> {
+                    return SavannaCore.getInstance().getWorldHandler().getWorldNames();
+                },
+                SavannaCore.Permission.DEBUG_COMMAND.toPermission()
+        ).register();
+        new Command(
                 "tp-world",
                 args -> {
                     if (!(args.getSender() instanceof Player player)) {
@@ -39,6 +59,42 @@ public final class DebugHandler {
                         player.teleport(SavannaCore.getInstance().getWorldHandler().load(args.getArgs()[0]).getWorld().getSpawnLocation());
                     } catch (Exception ignored) {
                     }
+                    return true;
+                },
+                args -> {
+                    return SavannaCore.getInstance().getWorldHandler().getWorldNames();
+                },
+                SavannaCore.Permission.DEBUG_COMMAND.toPermission()
+        ).register();
+        new Command(
+                "add-spawn",
+                args -> {
+                    if (!(args.getSender() instanceof Player player)) {
+                        CommandUtil.mismatchSender(args.getSender());
+                        return false;
+                    }
+                    if (!player.getWorld().getName().startsWith("sa.")) {
+                        ChatUtil.sendMessage(player, "§cYou need to run this command in savanna world.", true);
+                        return false;
+                    }
+                    SavannaCore.getInstance().getWorldHandler().load(player.getWorld().getName()).addSpawnLocation(player.getLocation());
+                    return true;
+                },
+                SavannaCore.Permission.DEBUG_COMMAND.toPermission()
+        ).register();
+        new Command(
+                "reload-world-config",
+                args -> {
+                    if (!(args.getSender() instanceof Player player)) {
+                        CommandUtil.mismatchSender(args.getSender());
+                        return false;
+                    }
+                    if (!player.getWorld().getName().startsWith("sa.")) {
+                        ChatUtil.sendMessage(player, "§cYou need to run this command in savanna world.", true);
+                        return false;
+                    }
+                    SavannaCore.getInstance().getWorldHandler().load(player.getWorld().getName()).reloadConfig();
+
                     return true;
                 },
                 SavannaCore.Permission.DEBUG_COMMAND.toPermission()

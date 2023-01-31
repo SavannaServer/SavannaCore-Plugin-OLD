@@ -7,6 +7,7 @@ import tokyo.ramune.savannacore.utility.Util;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,14 +51,53 @@ public final class SavannaWorld {
         return config;
     }
 
-    public List<Location> getSpawnLocations() {
-        final List<Map<String, Double>> spawnLocationMap = (List<Map<String, Double>>) config.getConfig().getList("config.spawn-locations");
+    public void reloadConfig() {
+        config.reloadConfig();
+        config.saveDefaultConfig();
+    }
 
+    public List<Location> getSpawnLocations() {
+        final List<Map<String, Double>> spawnLocationMap = (List<Map<String, Double>>) config.getConfig().getList(Path.SPAWN_LOCATIONS.getPath());
         return Util.toLocations(getWorld(), spawnLocationMap);
+    }
+
+    public List<Map<String, Double>> getRawSpawnLocations() {
+        return (List<Map<String, Double>>) config.getConfig().getList(Path.SPAWN_LOCATIONS.getPath());
+    }
+
+    public void addSpawnLocation(@Nonnull Location location) {
+        final Map<String, Double> rawLocation = new HashMap<>();
+
+        rawLocation.put("x", location.getX());
+        rawLocation.put("y", location.getY());
+        rawLocation.put("z", location.getZ());
+        rawLocation.put("yaw", (double) location.getYaw());
+        rawLocation.put("pitch", (double) location.getPitch());
+
+        List<Map<String, Double>> rawSpawnLocations = getRawSpawnLocations();
+        rawSpawnLocations.add(rawLocation);
+
+
+        getConfig().getConfig().set(Path.SPAWN_LOCATIONS.getPath(), rawSpawnLocations);
+        getConfig().saveConfig();
     }
 
     public List<WorldObject> getDefaultWorldObjects() {
         return new ArrayList<>();
         // TODO: 2023/01/24
+    }
+
+    public enum Path {
+        SPAWN_LOCATIONS("spawn-locations");
+
+        final String path;
+
+        Path(String path) {
+            this.path = path;
+        }
+
+        public String getPath() {
+            return "config." + path;
+        }
     }
 }

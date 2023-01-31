@@ -3,6 +3,7 @@ package tokyo.ramune.savannacore;
 import org.bukkit.Bukkit;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
+import tokyo.ramune.savannacore.command.Command;
 import tokyo.ramune.savannacore.config.CoreConfig;
 import tokyo.ramune.savannacore.database.DatabaseHandler;
 import tokyo.ramune.savannacore.debug.DebugHandler;
@@ -10,6 +11,7 @@ import tokyo.ramune.savannacore.item.SavannaItemHandler;
 import tokyo.ramune.savannacore.physics.PhysicsHandler;
 import tokyo.ramune.savannacore.server.GameServer;
 import tokyo.ramune.savannacore.sidebar.SideBarHandler;
+import tokyo.ramune.savannacore.utility.CommandUtil;
 import tokyo.ramune.savannacore.world.WorldHandler;
 
 public final class SavannaCore extends JavaPlugin {
@@ -47,18 +49,25 @@ public final class SavannaCore extends JavaPlugin {
         );
         physics = new PhysicsHandler();
         savannaItemHandler = new SavannaItemHandler();
-        debugHandler = new DebugHandler();
+        if (config.value(CoreConfig.Key.DEBUG_MODE, Boolean.class, false)) {
+            debugHandler = new DebugHandler();
+            debugHandler.enable();
+        }
 
-        if (config.value(CoreConfig.Key.DEBUG_MODE, Boolean.class, false)) debugHandler.enable();
-        if (!debugHandler.isEnabled()) gameServer = new GameServer();
-
+        if (debugHandler == null || !debugHandler.isEnabled()) {
+            gameServer = new GameServer();
+        }
         getLogger().info("The plugin has been enabled.");
     }
 
     @Override
     public void onDisable() {
-        database.getClient().close();
+        try {
+            if (database != null) database.getClient().close();
+        } catch (Exception ignored) {
+        }
         savannaItemHandler.unregisterAll();
+        CommandUtil.unregisterAll();
         getLogger().info("The plugin has been disabled.");
     }
 
@@ -101,7 +110,10 @@ public final class SavannaCore extends JavaPlugin {
 
         private static void register() {
             for (Permission permission : values()) {
-                Bukkit.getPluginManager().addPermission(permission.toPermission());
+                try {
+                    Bukkit.getPluginManager().addPermission(permission.toPermission());
+                } catch (IllegalArgumentException ignored) {
+                }
             }
         }
 

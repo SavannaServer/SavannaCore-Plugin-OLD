@@ -30,7 +30,7 @@ public final class ChatUtil {
         sendMessage(sender, message, addPrefix);
     }
 
-    public static void requirePremission(CommandSender sender, Permission permission) {
+    public static void requirePermission(CommandSender sender, Permission permission) {
         sendMessage(sender, "§cYou need the permission of " + permission.getName() + " to do that.", true);
     }
 }

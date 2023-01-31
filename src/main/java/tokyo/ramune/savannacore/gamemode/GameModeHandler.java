@@ -8,6 +8,7 @@ import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
 
 import javax.annotation.Nonnull;
+import java.nio.file.NoSuchFileException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +27,12 @@ public final class GameModeHandler {
         );
 
         // Detect first game mode
-        loadGameMode(Util.getRandom(getNormalGameModes()), Util.getRandom(SavannaCore.getInstance().getWorldHandler().getWorldNames()));
+        final List<String> savannaWorlds = SavannaCore.getInstance().getWorldHandler().getWorldNames();
+        if (savannaWorlds.size() == 0) {
+            SavannaCore.getInstance().getLogger().warning("Savanna world couldn't found.");
+            return;
+        }
+        loadGameMode(Util.getRandom(getNormalGameModes()), Util.getRandom(savannaWorlds));
     }
 
     protected void loadGameMode(@Nonnull GameMode gameMode, @Nonnull String worldName) {
