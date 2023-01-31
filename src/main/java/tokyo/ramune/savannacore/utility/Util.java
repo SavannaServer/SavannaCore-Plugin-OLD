@@ -37,14 +37,6 @@ public final class Util {
 
     }
 
-    public static DBObject toObject(Map<String, Object> objectMap) {
-        final DBObject object = new BasicDBObject();
-        for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
-            object.put(entry.getKey(), entry.getValue());
-        }
-        return object;
-    }
-
     public static <T> T getRandom(List<T> list) {
         final Random random = new Random();
         int index = random.nextInt(list.size());

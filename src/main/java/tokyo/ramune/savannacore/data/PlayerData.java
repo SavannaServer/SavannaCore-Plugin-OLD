@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class PlayerData {
+
     private final DBCollection players = SavannaCore.getInstance().getDatabase().getDB().getCollection("player_data");
 
     private final UUID uuid;

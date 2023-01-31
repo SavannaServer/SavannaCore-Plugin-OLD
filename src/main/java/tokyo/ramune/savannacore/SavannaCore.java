@@ -6,24 +6,29 @@ import org.bukkit.plugin.java.JavaPlugin;
 import tokyo.ramune.savannacore.config.CoreConfig;
 import tokyo.ramune.savannacore.database.DatabaseHandler;
 import tokyo.ramune.savannacore.debug.DebugHandler;
+import tokyo.ramune.savannacore.item.SavannaItemHandler;
 import tokyo.ramune.savannacore.physics.PhysicsHandler;
 import tokyo.ramune.savannacore.server.GameServer;
 import tokyo.ramune.savannacore.sidebar.SideBarHandler;
 import tokyo.ramune.savannacore.world.WorldHandler;
 
 public final class SavannaCore extends JavaPlugin {
+
     private static SavannaCore instance;
+
+    public static SavannaCore getInstance() {
+        return instance;
+    }
+
+
     private CoreConfig config;
     private DatabaseHandler database;
     private WorldHandler worldHandler;
     private SideBarHandler sideBarHandler;
     private PhysicsHandler physics;
+    private SavannaItemHandler savannaItemHandler;
     private DebugHandler debugHandler;
     private GameServer gameServer;
-
-    public static SavannaCore getInstance() {
-        return instance;
-    }
 
     @Override
     public void onEnable() {
@@ -41,6 +46,7 @@ public final class SavannaCore extends JavaPlugin {
                 config.value(CoreConfig.Key.DATABASE_PORT, Integer.class, 27017)
         );
         physics = new PhysicsHandler();
+        savannaItemHandler = new SavannaItemHandler();
         debugHandler = new DebugHandler();
 
         if (config.value(CoreConfig.Key.DEBUG_MODE, Boolean.class, false)) debugHandler.enable();
@@ -52,6 +58,7 @@ public final class SavannaCore extends JavaPlugin {
     @Override
     public void onDisable() {
         database.getClient().close();
+        savannaItemHandler.unregisterAll();
         getLogger().info("The plugin has been disabled.");
     }
 
@@ -73,6 +80,10 @@ public final class SavannaCore extends JavaPlugin {
 
     public PhysicsHandler getPhysics() {
         return physics;
+    }
+
+    public SavannaItemHandler getSavannaItemHandler() {
+        return savannaItemHandler;
     }
 
     public GameServer getGameServer() {
