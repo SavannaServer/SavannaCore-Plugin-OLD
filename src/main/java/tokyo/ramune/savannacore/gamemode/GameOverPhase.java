@@ -44,6 +44,7 @@ public final class GameOverPhase extends GameMode {
             sideBarHandler.setSideBar(sideBar);
             sideBar.show();
         }
+        Util.teleport(SavannaCore.getInstance().getWorldHandler().get("sa.vote").getWorld().getSpawnLocation());
     }
 
     @Override

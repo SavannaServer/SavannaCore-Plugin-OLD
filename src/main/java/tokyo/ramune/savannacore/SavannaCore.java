@@ -4,7 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import tokyo.ramune.savannacore.config.CoreConfig;
 import tokyo.ramune.savannacore.database.DatabaseHandler;
 import tokyo.ramune.savannacore.debug.DebugHandler;
-import tokyo.ramune.savannacore.item.SavannaItemHandler;
+import tokyo.ramune.savannacore.item.ItemHandler;
 import tokyo.ramune.savannacore.permission.SavannaPermission;
 import tokyo.ramune.savannacore.physics.PhysicsHandler;
 import tokyo.ramune.savannacore.server.GameServer;
@@ -20,7 +20,7 @@ public final class SavannaCore extends JavaPlugin {
     private WorldHandler worldHandler;
     private SideBarHandler sideBarHandler;
     private PhysicsHandler physics;
-    private SavannaItemHandler savannaItemHandler;
+    private ItemHandler itemHandler;
     private DebugHandler debugHandler;
     private GameServer gameServer;
 
@@ -43,7 +43,7 @@ public final class SavannaCore extends JavaPlugin {
                 config.value(CoreConfig.Key.DATABASE_PORT, Integer.class, 27017)
         );
         physics = new PhysicsHandler();
-        savannaItemHandler = new SavannaItemHandler();
+        itemHandler = new ItemHandler();
         if (config.value(CoreConfig.Key.DEBUG_MODE, Boolean.class, false)) debugHandler = new DebugHandler();
 
         if (debugHandler == null) gameServer = new GameServer();
@@ -57,7 +57,7 @@ public final class SavannaCore extends JavaPlugin {
         } catch (Exception ignored) {
         }
         SavannaPermission.unregisterAll();
-        savannaItemHandler.unregisterAll();
+        itemHandler.unregisterAll();
         CommandUtil.unregisterAll();
         getLogger().info("The plugin has been disabled.");
     }
@@ -82,8 +82,8 @@ public final class SavannaCore extends JavaPlugin {
         return physics;
     }
 
-    public SavannaItemHandler getSavannaItemHandler() {
-        return savannaItemHandler;
+    public ItemHandler getItemHandler() {
+        return itemHandler;
     }
 
     public GameServer getGameServer() {

@@ -18,6 +18,12 @@ public final class Util {
         return locations;
     }
 
+    public static void teleport(@Nonnull Location location) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.teleport(location);
+        }
+    }
+
     public static String formatElapsedTime(int seconds) {
         String sPlural = (seconds == 1 ? "" : "s");
 

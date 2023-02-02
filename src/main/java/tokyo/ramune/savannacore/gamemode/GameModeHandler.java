@@ -1,11 +1,14 @@
 package tokyo.ramune.savannacore.gamemode;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.gamemode.event.GameModeEndEvent;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
+import tokyo.ramune.savannacore.world.SavannaWorld;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -16,6 +19,7 @@ import java.util.Set;
 public final class GameModeHandler {
     private final List<Class<GameMode>> ignoreGameModes;
     private GameMode currentGameMode;
+    private SavannaWorld world;
 
     public GameModeHandler(@Nonnull List<Class<GameMode>> ignoreGameModes) {
         this.ignoreGameModes = ignoreGameModes;
@@ -31,14 +35,19 @@ public final class GameModeHandler {
             SavannaCore.getInstance().getLogger().warning("Savanna world couldn't found.");
             return;
         }
-        loadGameMode(Util.getRandom(getNormalGameModes()), Util.getRandom(savannaWorlds));
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                loadGameMode(Util.getRandom(getNormalGameModes()), Util.getRandom(savannaWorlds));
+            }
+        }.runTaskLater(SavannaCore.getInstance(), 10);
     }
 
     void loadGameMode(@Nonnull GameMode gameMode, @Nonnull String worldName) {
         if (currentGameMode != null && !currentGameMode.isEnded()) {
             currentGameMode.onUnload();
         }
-        SavannaCore.getInstance().getWorldHandler().load(worldName);
+        world = SavannaCore.getInstance().getWorldHandler().load(worldName);
         currentGameMode = gameMode;
         gameMode.onLoad();
     }
@@ -51,6 +60,10 @@ public final class GameModeHandler {
         return List.of(
                 new FreeForAll()
         );
+    }
+
+    public SavannaWorld getWorld() {
+        return world;
     }
 
     private final class GameModeEndListener implements Listener {

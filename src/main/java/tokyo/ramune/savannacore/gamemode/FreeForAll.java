@@ -10,6 +10,7 @@ import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.sidebar.SideBarHandler;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
+import tokyo.ramune.savannacore.world.SavannaWorld;
 
 public final class FreeForAll extends GameMode {
     public FreeForAll() {
@@ -32,6 +33,8 @@ public final class FreeForAll extends GameMode {
                 SavannaCore.getInstance(),
                 new SideBarListener()
         );
+        final SavannaWorld world = SavannaCore.getInstance().getGameServer().getGameModeHandler().getWorld();
+        Util.teleport(Util.getRandom(world.getSpawnLocations()));
     }
 
     @Override

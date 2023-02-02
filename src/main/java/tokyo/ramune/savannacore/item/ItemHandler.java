@@ -3,10 +3,10 @@ package tokyo.ramune.savannacore.item;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class SavannaItemHandler {
+public final class ItemHandler {
     private final Set<SavannaItem> registeredItem = new HashSet<>();
 
-    public SavannaItemHandler() {
+    public ItemHandler() {
     }
 
     public void register(SavannaItem savannaItem) {
