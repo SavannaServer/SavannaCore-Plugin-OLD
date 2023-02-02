@@ -19,7 +19,6 @@ public final class Util {
     }
 
     public static String formatElapsedTime(int seconds) {
-
         String sPlural = (seconds == 1 ? "" : "s");
 
         if (seconds < 60)
@@ -32,7 +31,14 @@ public final class Util {
 
         return m + " minute" + mPlural
                 + (s > 0 ? (", " + s + " second" + sPlural) : "");
+    }
 
+    public static Location toCenterLocation(@Nonnull Location location) {
+        final World world = location.getWorld();
+        final double x = location.getBlockX(),
+                y = location.getBlockY(),
+                z = location.getBlockZ();
+        return new Location(world, x + 0.5, y, z + 0.5);
     }
 
     public static <T> T getRandom(List<T> list) {

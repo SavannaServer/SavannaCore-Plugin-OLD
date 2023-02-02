@@ -6,19 +6,24 @@ import org.bukkit.util.Vector;
 import javax.annotation.Nonnull;
 
 public final class WorldObject {
+    private final SavannaWorld savannaWorld;
     private final Vector pos1, pos2;
     private final int maxHealth;
     private final Material replaceType;
     private int health;
-    private SavannaWorld world;
 
-    public WorldObject(@Nonnull Vector pos1, @Nonnull Vector pos2, int maxHealth, @Nonnull Material replaceType) {
+    public WorldObject(@Nonnull SavannaWorld savannaWorld, @Nonnull Vector pos1, @Nonnull Vector pos2, int maxHealth, @Nonnull Material replaceType) {
+        this.savannaWorld = savannaWorld;
         this.pos1 = pos1;
         this.pos2 = pos2;
         if (maxHealth <= 0) throw new IllegalArgumentException("maxHealth must be bigger than 0");
         this.maxHealth = maxHealth;
         health = maxHealth;
         this.replaceType = replaceType;
+    }
+
+    public SavannaWorld getSavannaWorld() {
+        return savannaWorld;
     }
 
     public Vector getPos1() {
@@ -46,14 +51,9 @@ public final class WorldObject {
         return replaceType;
     }
 
-    public void spawn(@Nonnull SavannaWorld savannaWorld) {
-        if (world != null) world.removeObject(this);
-        this.world = savannaWorld;
-        savannaWorld.addObject(this);
+    public void spawn() {
     }
 
     public void remove() {
-        if (world == null) return;
-        world.removeObject(this);
     }
 }

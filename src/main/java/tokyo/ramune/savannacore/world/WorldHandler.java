@@ -1,8 +1,10 @@
 package tokyo.ramune.savannacore.world;
 
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
+import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.utility.Util;
 
 import javax.annotation.Nonnull;
@@ -10,15 +12,43 @@ import java.io.File;
 import java.util.*;
 
 public final class WorldHandler {
-    private final List<WorldObject> objects = new ArrayList<>();
-    private SavannaWorld loadedWorld;
-
     public WorldHandler() {
+        // Optimize default worlds
+        for (World world : Bukkit.getWorlds()) {
+            applySettings(world);
+            for (Entity entity : world.getEntities()) {
+                try {
+                    entity.remove();
+                } catch (Exception ignored) {
+                }
+            }
+            for (Chunk chunk : world.getLoadedChunks()) {
+                world.unloadChunk(chunk);
+            }
+        }
+
+        // Load vote world
+        if (!new File("sa.vote").exists()) {
+            SavannaCore.getInstance().getLogger().warning("Couldn't find sa.vote world!");
+            Bukkit.shutdown();
+            return;
+        }
+        load("sa.vote");
+        // Load savanna game worlds
+        for (String worldName : getWorldNames()) {
+            load(worldName);
+        }
+    }
+
+    public SavannaWorld get(@Nonnull String name) {
+        return load(name);
     }
 
     public SavannaWorld load(@Nonnull String name) {
         if (!name.startsWith("sa.")) throw new IllegalArgumentException("SavannaWorld name must be start with 'sa.'");
-        if (loadedWorld != null && loadedWorld.getWorld().getName().equals(name)) return loadedWorld;
+        final World loadedWorld = Bukkit.getWorld(name);
+        if (loadedWorld != null) return new SavannaWorld(loadedWorld);
+
         final World world = new WorldCreator(name)
                 .type(WorldType.FLAT)
                 .generator(new EmptyChunkGenerator())
@@ -31,41 +61,25 @@ public final class WorldHandler {
 
         applySettings(world);
         for (WorldObject object : savannaWorld.getDefaultWorldObjects()) {
-            object.spawn(savannaWorld);
-            objects.add(object);
+            savannaWorld.spawnObject(object);
         }
         final List<? extends Player> players = Bukkit.getOnlinePlayers().stream().toList();
         for (Player player : players) {
             player.teleport(Util.getSafeSpawnPoint(savannaWorld.getSpawnLocations(), (Collection<Player>) Bukkit.getOnlinePlayers()));
         }
 
-        unload(loadedWorld);
-        loadedWorld = savannaWorld;
         return savannaWorld;
     }
 
-    private void unload(@Nonnull SavannaWorld savannaWorld) {
-        if (loadedWorld == null) {
-            for (Chunk loadedChunk : Bukkit.getWorlds().get(0).getLoadedChunks()) {
-                Bukkit.getWorlds().get(0).unloadChunk(loadedChunk);
-            }
-            Bukkit.unloadWorld(Bukkit.getWorlds().get(0), false);
-            return;
-        }
-        for (WorldObject object : objects) {
-            object.remove();
-        }
-        Bukkit.unloadWorld(savannaWorld.getName(), false);
-    }
-
-    public void loadDefaultWorld() {
-        new WorldCreator("world")
-                .generator(new EmptyChunkGenerator())
-                .generateStructures(false)
-                .createWorld();
-    }
-
     private void applySettings(@Nonnull World world) {
+        world.setAutoSave(false);
+        world.setViewDistance(7);
+        world.setDifficulty(Difficulty.EASY);
+        world.setHardcore(false);
+        world.setKeepSpawnInMemory(false);
+        world.setSendViewDistance(7);
+        world.setSimulationDistance(7);
+        world.setSpawnFlags(false, false);
         world.setGameRule(GameRule.DO_FIRE_TICK, false);
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
         world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
@@ -100,8 +114,7 @@ public final class WorldHandler {
         return worlds;
     }
 
-    private final static class EmptyChunkGenerator extends ChunkGenerator {
-
+    public final static class EmptyChunkGenerator extends ChunkGenerator {
         @Override
         @Nonnull
         public ChunkData generateChunkData(@Nonnull World world, @Nonnull Random random, int x, int z, @Nonnull BiomeGrid biome) {

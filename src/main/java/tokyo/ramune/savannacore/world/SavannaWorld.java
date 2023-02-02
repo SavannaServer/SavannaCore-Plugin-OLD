@@ -34,12 +34,14 @@ public final class SavannaWorld {
         return world;
     }
 
-    void addObject(@Nonnull WorldObject worldObject) {
+    void spawnObject(@Nonnull WorldObject worldObject) {
         worldObjects.add(worldObject);
+        // TODO
     }
 
     void removeObject(@Nonnull WorldObject worldObject) {
         if (!worldObjects.contains(worldObject)) return;
+        worldObject.remove();
         worldObjects.remove(worldObject);
     }
 

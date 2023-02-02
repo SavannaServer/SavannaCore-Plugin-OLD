@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.SavannaCore;
+import tokyo.ramune.savannacore.gun.listener.*;
 import tokyo.ramune.savannacore.utility.EventUtil;
 
 public class Gun {
@@ -15,11 +16,11 @@ public class Gun {
         EventUtil.register(
                 SavannaCore.getInstance(),
                 new ThrowBulletListener(),
-                new Bullet.BulletHitListener(),
-                new Bullet.BulletMoveEventListener(),
-                new Bullet.BulletDistanceListener(),
-                new Bullet.BulletParticleListener(),
-                new Bullet.BulletFarRemoveListener()
+                new BulletHitListener(),
+                new BulletMoveEventListener(),
+                new BulletDistanceListener(),
+                new BulletParticleListener(),
+                new BulletFarRemoveListener()
         );
     }
 
@@ -34,7 +35,7 @@ public class Gun {
 
             for (int i = 0; i < 5; i++) {
                 final Bullet bullet = new Bullet(Arrow.class);
-                bullet.shoot(player, location, velocity, 0.5);
+                bullet.shoot(player, location, velocity);
             }
         }
     }

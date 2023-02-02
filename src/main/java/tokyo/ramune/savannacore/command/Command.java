@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public final class Command {
+public class Command {
     private final String name;
     @Nullable
     private final Function<CommandArgs, Boolean> onCommand;
@@ -49,27 +49,13 @@ public final class Command {
         return onTabComplete;
     }
 
-    public void register() {
-        if (isRegistered(this)) return;
-        CommandUtil.register(
-                getName(),
-                new org.bukkit.command.Command(getName()) {
-                    @Override
-                    public boolean execute(@Nonnull CommandSender sender, @Nonnull String commandLabel, @Nonnull String[] args) {
-                        if (requirePermission != null && !sender.hasPermission(requirePermission)) {
-                            ChatUtil.requirePermission(sender, requirePermission);
-                            return false;
-                        }
-                        return getOnCommand() != null && getOnCommand().apply(new CommandArgs(sender, args));
-                    }
+    @Nullable
+    public Permission getRequirePermission() {
+        return requirePermission;
+    }
 
-                    @Override
-                    public @Nonnull List<String> tabComplete(@Nonnull CommandSender sender, @Nonnull String alias, @Nonnull String[] args) throws IllegalArgumentException {
-                        if (requirePermission != null && !sender.hasPermission(requirePermission))
-                            return new ArrayList<>();
-                        return getOnTabComplete() == null ? new ArrayList<>() : getOnTabComplete().apply(new CommandArgs(sender, args));
-                    }
-                });
+    public void register() {
+        CommandUtil.register(this);
     }
 
     public void unregister() {
