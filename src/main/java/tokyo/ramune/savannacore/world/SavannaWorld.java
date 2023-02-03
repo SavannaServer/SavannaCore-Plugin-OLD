@@ -16,7 +16,7 @@ public final class SavannaWorld {
     private final WorldConfig config;
     private final List<WorldObject> worldObjects = new ArrayList<>();
 
-    SavannaWorld(@Nonnull World world) {
+    public SavannaWorld(@Nonnull World world) {
         if (!world.getName().startsWith("sa."))
             throw new IllegalArgumentException("The world folder name must be start with 'sa.'");
         if (!new File("./" + world.getName()).exists())
@@ -89,8 +89,13 @@ public final class SavannaWorld {
         // TODO: 2023/01/24
     }
 
+    public int getWorldBorder() {
+        return getConfig().getConfig().getInt(Path.WORLD_BORDER.getPath(), 100);
+    }
+
     public enum Path {
-        SPAWN_LOCATIONS("spawn-locations");
+        SPAWN_LOCATIONS("spawn-locations"),
+        WORLD_BORDER("world-border");
 
         final String path;
 

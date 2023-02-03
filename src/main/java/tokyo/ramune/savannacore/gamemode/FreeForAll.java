@@ -14,7 +14,7 @@ import tokyo.ramune.savannacore.world.SavannaWorld;
 
 public final class FreeForAll extends GameMode {
     public FreeForAll() {
-        super("FFA", 10);
+        super("FFA", 240);
     }
 
     @Override
@@ -33,7 +33,7 @@ public final class FreeForAll extends GameMode {
                 SavannaCore.getInstance(),
                 new SideBarListener()
         );
-        final SavannaWorld world = SavannaCore.getInstance().getGameServer().getGameModeHandler().getWorld();
+        final SavannaWorld world = SavannaCore.getInstance().getGameServer().getGameModeHandler().getCurrentWorld();
         Util.teleport(Util.getRandom(world.getSpawnLocations()));
     }
 
@@ -69,7 +69,7 @@ public final class FreeForAll extends GameMode {
             super(player, "Savanna");
 
             addBlankLine();
-            addLine(() -> getClass().getName());
+            addLine(() -> getClass().getSimpleName());
             addBlankLine();
             addLine(() -> "Time left:");
             addLine(() -> Util.formatElapsedTime(getCurrentTime()));

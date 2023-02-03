@@ -1,17 +1,16 @@
 package tokyo.ramune.savannacore.gamemode;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.gamemode.event.GameModeEndEvent;
+import tokyo.ramune.savannacore.gamemode.event.GameModeStartEvent;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
 import tokyo.ramune.savannacore.world.SavannaWorld;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,7 +18,7 @@ import java.util.Set;
 public final class GameModeHandler {
     private final List<Class<GameMode>> ignoreGameModes;
     private GameMode currentGameMode;
-    private SavannaWorld world;
+    private SavannaWorld currentWorld;
 
     public GameModeHandler(@Nonnull List<Class<GameMode>> ignoreGameModes) {
         this.ignoreGameModes = ignoreGameModes;
@@ -47,9 +46,10 @@ public final class GameModeHandler {
         if (currentGameMode != null && !currentGameMode.isEnded()) {
             currentGameMode.onUnload();
         }
-        world = SavannaCore.getInstance().getWorldHandler().load(worldName);
+        currentWorld = SavannaCore.getInstance().getWorldHandler().load(worldName);
         currentGameMode = gameMode;
         gameMode.onLoad();
+        EventUtil.callEvent(new GameModeStartEvent(gameMode));
     }
 
     public GameMode getCurrentGameMode() {
@@ -62,8 +62,8 @@ public final class GameModeHandler {
         );
     }
 
-    public SavannaWorld getWorld() {
-        return world;
+    public SavannaWorld getCurrentWorld() {
+        return currentWorld;
     }
 
     private final class GameModeEndListener implements Listener {
@@ -85,5 +85,9 @@ public final class GameModeHandler {
             }
             loadGameMode(new GameOverPhase(), "sa.vote");
         }
+    }
+
+    private final class GameModePlayerListener implements Listener {
+
     }
 }

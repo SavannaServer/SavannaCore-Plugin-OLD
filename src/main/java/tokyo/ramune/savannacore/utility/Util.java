@@ -24,19 +24,15 @@ public final class Util {
         }
     }
 
-    public static String formatElapsedTime(int seconds) {
-        String sPlural = (seconds == 1 ? "" : "s");
+    public static String formatElapsedTime(int secs) {
+        if (secs <= 0) return "0";
+        int hours = secs / 3600;
+        int minutes = (secs % 3600) / 60;
+        int seconds = secs % 60;
 
-        if (seconds < 60)
-            return seconds + " second" + sPlural;
-
-        int s = (seconds % 60);
-        sPlural = (seconds == 1 ? "" : "s");
-        int m = seconds / 60;
-        String mPlural = (m == 1 ? "" : "s");
-
-        return m + " minute" + mPlural
-                + (s > 0 ? (", " + s + " second" + sPlural) : "");
+        if (hours == 0 && minutes == 0) return String.valueOf(seconds);
+        else if (hours == 0) return minutes + ":" + seconds;
+        else return hours + ":" + minutes + ":" + seconds;
     }
 
     public static Location toCenterLocation(@Nonnull Location location) {
@@ -47,7 +43,8 @@ public final class Util {
         return new Location(world, x + 0.5, y, z + 0.5);
     }
 
-    public static <T> T getRandom(List<T> list) {
+    public static <T> T getRandom(Collection<T> collection) {
+        final List<T> list = new ArrayList<>(collection);
         final Random random = new Random();
         int index = random.nextInt(list.size());
         return list.get(index);

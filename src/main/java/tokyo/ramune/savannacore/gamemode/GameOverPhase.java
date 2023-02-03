@@ -8,22 +8,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.asset.SoundAsset;
+import tokyo.ramune.savannacore.gamemode.vote.VoteHandler;
 import tokyo.ramune.savannacore.sidebar.SideBarHandler;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public final class GameOverPhase extends GameMode {
-    private final Map<GameMode, Integer> gameModeVotes;
+    private final VoteHandler voteHandler;
     private final Set<Player> nonGravityPlayers = new HashSet<>();
 
     public GameOverPhase() {
         super("Game Over", 15);
-        this.gameModeVotes = new HashMap<>();
+        voteHandler = new VoteHandler();
 
     }
 
@@ -35,8 +34,6 @@ public final class GameOverPhase extends GameMode {
                 new SideBarListener()
         );
 
-        Bukkit.getOnlinePlayers().forEach(SoundAsset.GAME_OVER::play);
-
         final SideBarHandler sideBarHandler = SavannaCore.getInstance().getSideBarHandler();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -44,7 +41,9 @@ public final class GameOverPhase extends GameMode {
             sideBarHandler.setSideBar(sideBar);
             sideBar.show();
         }
+
         Util.teleport(SavannaCore.getInstance().getWorldHandler().get("sa.vote").getWorld().getSpawnLocation());
+        Bukkit.getOnlinePlayers().forEach(SoundAsset.GAME_OVER::play);
     }
 
     @Override
@@ -90,7 +89,7 @@ public final class GameOverPhase extends GameMode {
             super(player, "Savanna");
 
             addBlankLine();
-            addLine(() -> getClass().getName());
+            addLine(() -> "");
             addBlankLine();
             addLine(() -> "Time left:");
             addLine(() -> Util.formatElapsedTime(getCurrentTime()));

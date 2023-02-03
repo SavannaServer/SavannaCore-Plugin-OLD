@@ -5,7 +5,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import tokyo.ramune.savannacore.SavannaCore;
+import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
+import tokyo.ramune.savannacore.world.listener.DisableWorldOutListener;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -27,6 +29,11 @@ public final class WorldHandler {
             }
         }
 
+        EventUtil.register(
+                SavannaCore.getInstance(),
+                new DisableWorldOutListener(this)
+        );
+
         // Load vote world
         if (!new File("sa.vote").exists()) {
             SavannaCore.getInstance().getLogger().warning("Couldn't find sa.vote world!");
@@ -34,6 +41,7 @@ public final class WorldHandler {
             return;
         }
         load("sa.vote");
+
         // Load savanna game worlds
         for (String worldName : getWorldNames()) {
             load(worldName);
@@ -50,7 +58,6 @@ public final class WorldHandler {
         if (loadedWorld != null) return new SavannaWorld(loadedWorld);
 
         final World world = new WorldCreator(name)
-                .type(WorldType.FLAT)
                 .generator(new EmptyChunkGenerator())
                 .generateStructures(false)
                 .createWorld();
