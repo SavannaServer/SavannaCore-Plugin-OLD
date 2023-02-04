@@ -117,7 +117,6 @@ public final class WorldHandler {
             if (file.getName().equals("sa.vote") || file.getName().equals("sa.lobby")) continue;
             worlds.add(file.getName());
         }
-
         return worlds;
     }
 

@@ -1,10 +1,12 @@
 package tokyo.ramune.savannacore;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import tokyo.ramune.savannacore.asset.MessageAsset;
 import tokyo.ramune.savannacore.config.CoreConfig;
 import tokyo.ramune.savannacore.database.DatabaseHandler;
 import tokyo.ramune.savannacore.debug.DebugHandler;
 import tokyo.ramune.savannacore.item.ItemHandler;
+import tokyo.ramune.savannacore.language.LanguageHandler;
 import tokyo.ramune.savannacore.permission.SavannaPermission;
 import tokyo.ramune.savannacore.physics.PhysicsHandler;
 import tokyo.ramune.savannacore.server.GameServer;
@@ -16,6 +18,7 @@ public final class SavannaCore extends JavaPlugin {
     private static SavannaCore instance;
 
     private CoreConfig config;
+    private LanguageHandler languageHandler;
     private DatabaseHandler database;
     private WorldHandler worldHandler;
     private SideBarHandler sideBarHandler;
@@ -35,6 +38,7 @@ public final class SavannaCore extends JavaPlugin {
         SavannaPermission.registerAll();
 
         config = new CoreConfig(this);
+        languageHandler = new LanguageHandler();
         database = new DatabaseHandler();
         worldHandler = new WorldHandler();
         sideBarHandler = new SideBarHandler();
@@ -64,6 +68,10 @@ public final class SavannaCore extends JavaPlugin {
 
     public CoreConfig getCoreConfig() {
         return config;
+    }
+
+    public LanguageHandler getLanguageHandler() {
+        return languageHandler;
     }
 
     public DatabaseHandler getDatabase() {

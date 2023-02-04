@@ -27,9 +27,4 @@ public final class WorldConfig extends ConfigFile {
             }
         }
     }
-
-    @Override
-    public void saveConfig() {
-        super.saveConfig();
-    }
 }
