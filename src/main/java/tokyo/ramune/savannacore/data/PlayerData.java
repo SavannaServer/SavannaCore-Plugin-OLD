@@ -4,15 +4,14 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import tokyo.ramune.savannacore.SavannaCore;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
 import java.util.UUID;
 
 public final class PlayerData {
-
-    private final DBCollection players = SavannaCore.getInstance().getDatabase().getDB().getCollection("player_data");
+    private final DBCollection players = SavannaCore.getInstance().getDatabase().getPlayerData();
 
     private final UUID uuid;
     private DBObject object = new BasicDBObject();
@@ -34,13 +33,16 @@ public final class PlayerData {
 
     public void initialize() {
         for (Key key : Key.values()) {
-            object.put(key.getName(), key.getDef());
+            object.put(key.getName(), key.getDefault());
         }
+        System.out.println(10);
+        save();
     }
 
     public void save() {
         object.put("uuid", uuid);
-        object.put("name", Objects.requireNonNull(Bukkit.getPlayer(uuid)).getName());
+        final Player player = Bukkit.getPlayer(uuid);
+        object.put("name", player == null ? uuid.toString() : player.getName());
 
         if (exist) {
             players.update(latestObject, object);
@@ -50,11 +52,11 @@ public final class PlayerData {
         }
     }
 
-    public <T> T value(@Nonnull Key key, @Nonnull Class<T> clazz) {
+    public <T> T getValue(@Nonnull Key key, @Nonnull Class<T> clazz) {
         return (T) object.get(key.getName());
     }
 
-    public void value(@Nonnull Key key, Object value) {
+    public void setValue(@Nonnull Key key, Object value) {
         object.put(key.getName(), value);
     }
 
@@ -69,7 +71,7 @@ public final class PlayerData {
             this.def = def;
         }
 
-        public Object getDef() {
+        public Object getDefault() {
             return def;
         }
 

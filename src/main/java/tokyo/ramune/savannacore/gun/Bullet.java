@@ -1,10 +1,13 @@
 package tokyo.ramune.savannacore.gun;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
+import tokyo.ramune.savannacore.SavannaCore;
+import tokyo.ramune.savannacore.asset.BulletParticleAsset;
 import tokyo.ramune.savannacore.asset.SoundAsset;
+import tokyo.ramune.savannacore.gun.listener.*;
+import tokyo.ramune.savannacore.utility.EventUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,12 +20,12 @@ public final class Bullet {
     private final Class<? extends Projectile> entityType;
     private @Nullable Projectile projectile;
     private Player shooter;
+    private BulletParticleAsset particle;
     private int damage = 1;
     private @Nullable Location shotLocation;
-    private boolean gravity = false;
-    private double shake = 0.1;
-    private double maxDistance = 100;
-    private double distance = 0;
+    private boolean gravity = false, visible = false;
+    private double shake = 0.1, maxDistance = 100, distance = 0;
+
     public Bullet(Class<? extends Projectile> entityType) {
         this.entityType = entityType;
     }
@@ -42,6 +45,20 @@ public final class Bullet {
                 .orElse(null);
     }
 
+    public static void registerListener() {
+        EventUtil.register(
+                SavannaCore.getInstance(),
+                new BulletBlockCrackListener(),
+                new BulletDamageListener(),
+                new BulletDistanceListener(),
+                new BulletFarRemoveListener(),
+                new BulletHitListener(),
+                new BulletHitSoundListener(),
+                new BulletMoveEventListener(),
+                new BulletParticleListener()
+        );
+    }
+
     public Class<? extends Projectile> getEntityType() {
         return entityType;
     }
@@ -53,6 +70,14 @@ public final class Bullet {
 
     public Player getShooter() {
         return shooter;
+    }
+
+    public BulletParticleAsset getParticle() {
+        return particle;
+    }
+
+    public void setParticle(BulletParticleAsset particle) {
+        this.particle = particle;
     }
 
     public int getDamage() {
@@ -88,6 +113,18 @@ public final class Bullet {
         this.shake = shake;
     }
 
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public boolean isGravity() {
+        return gravity;
+    }
+
     public double getMaxDistance() {
         return maxDistance;
     }
@@ -104,17 +141,17 @@ public final class Bullet {
         this.distance = distance;
     }
 
-    public void shoot(@Nonnull Player shooter, @Nonnull Location location, @Nonnull Vector velocity) {
+    public void shoot(@Nonnull Player shooter, @Nonnull BulletParticleAsset particle, @Nonnull Location location, @Nonnull Vector velocity) {
         if (projectile != null) return;
         this.shooter = shooter;
+        this.particle = particle;
         this.shotLocation = location;
         final Random random = new Random();
-        velocity.add(new Vector(random.nextDouble(-shake, shake * 2), random.nextDouble(-shake, shake * 2), random.nextDouble(-shake, shake * 2)));
+        velocity.add(new Vector(random.nextDouble(-shake, shake), random.nextDouble(-shake, shake), random.nextDouble(-shake, shake)));
         projectile = shooter.launchProjectile(entityType, velocity);
         projectile.setGravity(gravity);
         projectile.setVelocity(velocity);
         projectile.setSilent(true);
-
         SoundAsset.SHOOT.play(shotLocation);
 
         bullets.add(this);

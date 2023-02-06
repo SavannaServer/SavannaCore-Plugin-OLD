@@ -3,13 +3,22 @@ package tokyo.ramune.savannacore.utility;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import tokyo.ramune.savannacore.gun.Bullet;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 
 public final class Util {
+    public static boolean isHeadshot(@Nonnull Entity hitEntity, @Nonnull Bullet bullet) {
+        if (bullet.getProjectile() == null) return false;
+
+        final double bulletDistance = hitEntity.isSneaking() ? 1 : 1.5;
+        return hitEntity.getLocation().distance(bullet.getProjectile().getLocation()) > bulletDistance;
+    }
+
     public static List<Location> toLocations(@Nonnull World world, @Nonnull List<Map<String, Double>> rawLocations) {
         final List<Location> locations = new ArrayList<>();
         for (Map<String, Double> raw : rawLocations) {
@@ -30,9 +39,9 @@ public final class Util {
         int minutes = (secs % 3600) / 60;
         int seconds = secs % 60;
 
-        if (hours == 0 && minutes == 0) return String.valueOf(seconds);
-        else if (hours == 0) return minutes + ":" + seconds;
-        else return hours + ":" + minutes + ":" + seconds;
+        if (hours == 0 && minutes == 0) return seconds < 10 ? "0" + seconds : String.valueOf(seconds);
+        else if (hours == 0) return minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
+        else return hours + ":" + minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
     }
 
     public static Location toCenterLocation(@Nonnull Location location) {

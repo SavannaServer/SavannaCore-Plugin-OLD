@@ -9,9 +9,12 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import tokyo.ramune.savannacore.asset.SoundAsset;
 import tokyo.ramune.savannacore.gun.Bullet;
+import tokyo.ramune.savannacore.gun.event.BulletHitBlockEvent;
+import tokyo.ramune.savannacore.gun.event.BulletHitEntityEvent;
+import tokyo.ramune.savannacore.utility.EventUtil;
+import tokyo.ramune.savannacore.utility.Util;
 
 public final class BulletHitListener implements Listener {
     @EventHandler
@@ -23,30 +26,11 @@ public final class BulletHitListener implements Listener {
         if (event.getHitBlock() != null) {
             projectile.remove();
             event.setCancelled(true);
-            final Location location = projectile.getLocation();
-            final BlockData blockData = event.getHitBlock().getBlockData();
-            if (bullet.getDistance() > 0) {
-                location.getWorld().spawnParticle(Particle.BLOCK_CRACK, location, 5, 0, 0, 0, blockData);
-            } else {
-                final Location hitBlockLocation = event.getHitBlock().getLocation();
-                location.getWorld().spawnParticle(Particle.BLOCK_CRACK, hitBlockLocation, 5, 0.1F, 0.1F, 0.1F, 0.1F, blockData);
-            }
+            EventUtil.callEvent(new BulletHitBlockEvent(bullet, projectile.getLocation().getBlock()));
             return;
         }
         if (event.getHitEntity() != null) {
-            event.setCancelled(true);
-            final LivingEntity hitEntity = (LivingEntity) event.getHitEntity();
-            hitEntity.playEffect(EntityEffect.HURT);
-            SoundAsset.HIT.play(bullet.getShooter());
-            projectile.remove();
-            double damage = hitEntity.getHealth() - bullet.getDamage();
-            hitEntity.setHealth(damage < 0 ? 0 : damage);
+            EventUtil.callEvent(new BulletHitEntityEvent(bullet, event.getHitEntity(), Util.isHeadshot(event.getHitEntity(), bullet)));
         }
     }
-
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        System.out.println(1);
-    }
-
 }

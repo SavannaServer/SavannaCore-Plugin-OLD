@@ -5,6 +5,8 @@ import tokyo.ramune.savannacore.asset.MessageAsset;
 import tokyo.ramune.savannacore.config.CoreConfig;
 import tokyo.ramune.savannacore.database.DatabaseHandler;
 import tokyo.ramune.savannacore.debug.DebugHandler;
+import tokyo.ramune.savannacore.gun.Bullet;
+import tokyo.ramune.savannacore.gun.Gun;
 import tokyo.ramune.savannacore.item.ItemHandler;
 import tokyo.ramune.savannacore.language.LanguageHandler;
 import tokyo.ramune.savannacore.permission.SavannaPermission;
@@ -40,16 +42,18 @@ public final class SavannaCore extends JavaPlugin {
         config = new CoreConfig(this);
         languageHandler = new LanguageHandler();
         database = new DatabaseHandler();
-        worldHandler = new WorldHandler();
-        sideBarHandler = new SideBarHandler();
         database.connect(
                 config.value(CoreConfig.Key.DATABASE_HOST, String.class, "localhost"),
                 config.value(CoreConfig.Key.DATABASE_PORT, Integer.class, 27017)
         );
+        worldHandler = new WorldHandler();
+        sideBarHandler = new SideBarHandler();
         physics = new PhysicsHandler();
+        Bullet.registerListener();
         itemHandler = new ItemHandler();
         if (config.value(CoreConfig.Key.DEBUG_MODE, Boolean.class, false)) debugHandler = new DebugHandler();
 
+        new Gun();
         if (debugHandler == null) gameServer = new GameServer();
         getLogger().info("The plugin has been enabled.");
     }
