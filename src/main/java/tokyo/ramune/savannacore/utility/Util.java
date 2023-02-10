@@ -12,6 +12,10 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 public final class Util {
+    public static boolean isBetween(int i, int min, int max) {
+        return min <= i && i <= max;
+    }
+
     public static boolean isHeadshot(@Nonnull Entity hitEntity, @Nonnull Bullet bullet) {
         if (bullet.getProjectile() == null) return false;
 

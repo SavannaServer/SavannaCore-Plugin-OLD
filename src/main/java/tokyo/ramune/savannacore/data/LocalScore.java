@@ -14,16 +14,19 @@ public final class LocalScore {
         this.scores = new HashMap<>();
     }
 
-    public <T> T getValue(@Nonnull GlobalScore.Key key, @Nonnull Class<T> clazz) {
-        return (T) (scores.containsKey(key) ? scores.get(key.getName()) : key.getDefault());
+    public long getValue(@Nonnull GlobalScore.Key key) {
+        return (long) (scores.containsKey(key.getName()) ? scores.get(key.getName()) : key.getDefault());
     }
 
-    public void setValue(@Nonnull GlobalScore.Key key, Object value) {
+    public void setValue(@Nonnull GlobalScore.Key key, long value) {
         scores.put(key, value);
     }
 
     public void applyGlobal() {
         final GlobalScore globalScore = new GlobalScore(playerUniqueId);
-
+        for (Map.Entry<GlobalScore.Key, Object> entry : scores.entrySet()) {
+            globalScore.setValue(entry.getKey(), globalScore.getValue(entry.getKey()) + (long) entry.getValue());
+        }
+        globalScore.save();
     }
 }

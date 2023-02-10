@@ -21,7 +21,7 @@ public final class GlobalScore {
     public GlobalScore(@Nonnull UUID playerUniqueId) {
         this.playerUniqueId = playerUniqueId;
 
-        final DBObject score = scores.findOne(new BasicDBObject("uuid", playerUniqueId));
+        final DBObject score = scores.findOne(new BasicDBObject("uuid", playerUniqueId.toString()));
         if (score == null) {
             initialize();
             return;
@@ -39,7 +39,7 @@ public final class GlobalScore {
     }
 
     public void save() {
-        object.put("uuid", playerUniqueId);
+        object.put("uuid", playerUniqueId.toString());
         final Player player = Bukkit.getPlayer(playerUniqueId);
         object.put("name", player == null ? playerUniqueId.toString() : player.getName());
 
@@ -51,8 +51,8 @@ public final class GlobalScore {
         }
     }
 
-    public <T> T getValue(@Nonnull GlobalScore.Key key, @Nonnull Class<T> clazz) {
-        return (T) object.get(key.getName());
+    public long getValue(@Nonnull GlobalScore.Key key) {
+        return (long) object.get(key.getName());
     }
 
     public void setValue(@Nonnull GlobalScore.Key key, Object value) {

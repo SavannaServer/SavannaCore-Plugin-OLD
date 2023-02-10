@@ -1,21 +1,20 @@
 package tokyo.ramune.savannacore.gun.event;
 
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import tokyo.ramune.savannacore.gun.Bullet;
 
 import javax.annotation.Nonnull;
 
-public final class BulletHitBlockEvent extends Event {
+public class ShootEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final Bullet bullet;
-    private final Block hitBlock;
+    private final Player player;
+    private final Bullet shotBullet;
 
-    public BulletHitBlockEvent(@Nonnull Bullet bullet, @Nonnull Block hitBlock) {
-        this.bullet = bullet;
-        this.hitBlock = hitBlock;
+    public ShootEvent(@Nonnull Player player, @Nonnull Bullet shotBullet) {
+        this.player = player;
+        this.shotBullet = shotBullet;
     }
 
     public static HandlerList getHandlerList() {
@@ -27,11 +26,12 @@ public final class BulletHitBlockEvent extends Event {
         return HANDLERS;
     }
 
-    public Bullet getBullet() {
-        return bullet;
+    public Player getPlayer() {
+        return player;
     }
 
-    public Block getHitBlock() {
-        return hitBlock;
+    public Bullet getShotBullet() {
+        return shotBullet;
     }
 }
+

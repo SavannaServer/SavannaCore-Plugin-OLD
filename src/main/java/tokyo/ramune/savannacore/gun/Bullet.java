@@ -6,6 +6,7 @@ import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.asset.BulletParticleAsset;
 import tokyo.ramune.savannacore.asset.SoundAsset;
+import tokyo.ramune.savannacore.gun.event.ShootEvent;
 import tokyo.ramune.savannacore.gun.listener.*;
 import tokyo.ramune.savannacore.utility.EventUtil;
 
@@ -155,5 +156,7 @@ public final class Bullet {
         SoundAsset.SHOOT.play(shotLocation);
 
         bullets.add(this);
+
+        EventUtil.callEvent(new ShootEvent(shooter, this));
     }
 }

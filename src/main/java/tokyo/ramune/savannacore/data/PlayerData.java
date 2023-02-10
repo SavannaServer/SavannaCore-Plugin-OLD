@@ -21,7 +21,7 @@ public final class PlayerData {
     public PlayerData(@Nonnull UUID uuid) {
         this.uuid = uuid;
 
-        final DBObject player = players.findOne(new BasicDBObject("uuid", uuid));
+        final DBObject player = players.findOne(new BasicDBObject("uuid", uuid.toString()));
         if (player == null) {
             initialize();
             return;
@@ -35,12 +35,11 @@ public final class PlayerData {
         for (Key key : Key.values()) {
             object.put(key.getName(), key.getDefault());
         }
-        System.out.println(10);
         save();
     }
 
     public void save() {
-        object.put("uuid", uuid);
+        object.put("uuid", uuid.toString());
         final Player player = Bukkit.getPlayer(uuid);
         object.put("name", player == null ? uuid.toString() : player.getName());
 

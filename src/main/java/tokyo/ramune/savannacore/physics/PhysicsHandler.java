@@ -28,7 +28,6 @@ public final class PhysicsHandler {
                 SavannaCore.getInstance(),
                 new PhysicsAutoApplyListener(this),
                 new AutoSprintListener(this),
-                new SlidingListener(this),
                 new WallJumpListener(this),
                 new NoHungerListener(this),
                 new NoFallDamageListener(this)

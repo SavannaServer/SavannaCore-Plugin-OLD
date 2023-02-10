@@ -7,7 +7,7 @@ import tokyo.ramune.savannacore.gun.Bullet;
 
 import javax.annotation.Nonnull;
 
-public class BulletHitEntityEvent extends Event {
+public final class BulletHitEntityEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
     private final Bullet bullet;
     private final Entity entity;
