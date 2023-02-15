@@ -1,7 +1,6 @@
 package tokyo.ramune.savannacore.gun.event;
 
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import tokyo.ramune.savannacore.gun.Bullet;

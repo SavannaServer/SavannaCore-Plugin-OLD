@@ -1,15 +1,9 @@
 package tokyo.ramune.savannacore.gun.listener;
 
-import org.bukkit.EntityEffect;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import tokyo.ramune.savannacore.asset.SoundAsset;
 import tokyo.ramune.savannacore.gun.Bullet;
 import tokyo.ramune.savannacore.gun.event.BulletHitBlockEvent;
 import tokyo.ramune.savannacore.gun.event.BulletHitEntityEvent;

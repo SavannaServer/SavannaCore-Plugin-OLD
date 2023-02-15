@@ -48,9 +48,9 @@ public enum BulletParticleAsset {
     private final int extra;
 
     BulletParticleAsset(Particle particle, int extra) {
-         this.particle = particle;
-         this.extra = extra;
-     }
+        this.particle = particle;
+        this.extra = extra;
+    }
 
     public Particle getParticle() {
         return particle;

@@ -1,14 +1,11 @@
 package tokyo.ramune.savannacore.command;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
-import tokyo.ramune.savannacore.utility.ChatUtil;
 import tokyo.ramune.savannacore.utility.CommandUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 

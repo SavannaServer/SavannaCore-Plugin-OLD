@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.util.Vector;
-
 import tokyo.ramune.savannacore.gun.event.BulletMoveEvent;
 
 public final class BulletParticleListener implements Listener {
