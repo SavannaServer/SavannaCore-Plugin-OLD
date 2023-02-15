@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.SavannaCore;
-import tokyo.ramune.savannacore.asset.BulletParticleAsset;
 import tokyo.ramune.savannacore.gun.event.ToggleShootEvent;
 import tokyo.ramune.savannacore.utility.EventUtil;
 
@@ -41,8 +40,8 @@ public class Gun {
                         final Vector velocity = location.getDirection().multiply(4);
 
                         final Bullet bullet = new Bullet(Arrow.class);
-                        bullet.setShake(0.3);
-                        bullet.shoot(player, BulletParticleAsset.ASH, location, velocity);
+                        bullet.setRange(0.3);
+                        bullet.shoot(player);
                     }
                 };
                 task.runTaskTimer(SavannaCore.getInstance(), 2, 1);

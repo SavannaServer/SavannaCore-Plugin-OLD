@@ -2,12 +2,11 @@ package tokyo.ramune.savannacore.inventory.listener;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import tokyo.ramune.savannacore.inventory.SavannaInventory;
 import tokyo.ramune.savannacore.utility.Util;
 
-public class ForceItemSlotListener implements Listener {
+public class ForceItemSlotListener extends InventoryHandlerListener {
     @EventHandler
     public void onPlayerItemHeld(PlayerItemHeldEvent event) {
         final Player player = event.getPlayer();

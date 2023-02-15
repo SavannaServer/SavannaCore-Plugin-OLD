@@ -11,7 +11,7 @@ public final class BulletDistanceListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBulletMove(BulletMoveEvent event) {
         final Bullet bullet = event.getBullet();
-        final Location shotLocation = bullet.getShotLocation();
+        final Location shotLocation = bullet.getLocation();
         if (shotLocation == null) return;
 
         bullet.setDistance(event.getTo().distance(shotLocation));

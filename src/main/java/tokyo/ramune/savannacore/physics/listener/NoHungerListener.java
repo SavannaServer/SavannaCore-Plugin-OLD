@@ -8,7 +8,7 @@ import tokyo.ramune.savannacore.physics.PhysicsHandler;
 
 import javax.annotation.Nonnull;
 
-public final class NoHungerListener extends PhysicsListener {
+public final class NoHungerListener extends PhysicsHandlerListener {
     public NoHungerListener(@Nonnull PhysicsHandler physicsHandler) {
         super(physicsHandler);
     }

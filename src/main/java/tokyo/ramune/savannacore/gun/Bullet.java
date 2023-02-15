@@ -1,7 +1,8 @@
 package tokyo.ramune.savannacore.gun;
 
 import org.bukkit.Location;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.util.Vector;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.asset.BulletParticleAsset;
@@ -21,11 +22,11 @@ public final class Bullet {
     private final Class<? extends Projectile> entityType;
     private @Nullable Projectile projectile;
     private Player shooter;
-    private BulletParticleAsset particle;
+    private BulletParticleAsset particle = BulletParticleAsset.ASH;
     private int damage = 1;
-    private @Nullable Location shotLocation;
+    private @Nullable Location location;
     private boolean gravity = false, visible = false;
-    private double shake = 0.1, maxDistance = 100, distance = 0;
+    private double velocity = 3, range = 0.1, maxDistance = 100, distance = 0;
 
     public Bullet(Class<? extends Projectile> entityType) {
         this.entityType = entityType;
@@ -69,6 +70,7 @@ public final class Bullet {
         return projectile;
     }
 
+    @Nullable
     public Player getShooter() {
         return shooter;
     }
@@ -77,86 +79,105 @@ public final class Bullet {
         return particle;
     }
 
-    public void setParticle(BulletParticleAsset particle) {
+    public Bullet setParticle(BulletParticleAsset particle) {
         this.particle = particle;
+        return this;
     }
 
     public int getDamage() {
         return damage;
     }
 
-    public void setDamage(int damage) {
+    public Bullet setDamage(int damage) {
         this.damage = damage;
+        return this;
     }
 
     @Nullable
-    public Location getShotLocation() {
-        return shotLocation;
+    public Location getLocation() {
+        return location;
     }
 
-    public void setShotLocation(@Nullable Location shotLocation) {
-        this.shotLocation = shotLocation;
+    public Bullet setLocation(@Nullable Location location) {
+        this.location = location;
+        return this;
     }
 
     public boolean hasGravity() {
         return gravity;
     }
 
-    public void setGravity(boolean gravity) {
-        this.gravity = gravity;
+    public double getVelocity() {
+        return velocity;
     }
 
-    public double getShake() {
-        return shake;
+    public Bullet setVelocity(double velocity) {
+        this.velocity = velocity;
+        return this;
     }
 
-    public void setShake(double shake) {
-        this.shake = shake;
+    public double getRange() {
+        return range;
+    }
+
+    public Bullet setRange(double range) {
+        this.range = range;
+        return this;
     }
 
     public boolean isVisible() {
         return visible;
     }
 
-    public void setVisible(boolean visible) {
+    public Bullet setVisible(boolean visible) {
         this.visible = visible;
+        return this;
     }
 
     public boolean isGravity() {
         return gravity;
     }
 
+    public Bullet setGravity(boolean gravity) {
+        this.gravity = gravity;
+        return this;
+    }
+
     public double getMaxDistance() {
         return maxDistance;
     }
 
-    public void setMaxDistance(double maxDistance) {
+    public Bullet setMaxDistance(double maxDistance) {
         this.maxDistance = maxDistance;
+        return this;
     }
 
     public double getDistance() {
         return distance;
     }
 
-    public void setDistance(double distance) {
+    public Bullet setDistance(double distance) {
         this.distance = distance;
+        return this;
     }
 
-    public void shoot(@Nonnull Player shooter, @Nonnull BulletParticleAsset particle, @Nonnull Location location, @Nonnull Vector velocity) {
-        if (projectile != null) return;
+    public Bullet shoot(@Nonnull Player shooter) {
+        if (projectile != null) return this;
         this.shooter = shooter;
-        this.particle = particle;
-        this.shotLocation = location;
+        this.location = shooter.getLocation().add(0, 1.5, 0);
+        final Vector velocity = shooter.getLocation().getDirection().multiply(this.velocity);
         final Random random = new Random();
-        velocity.add(new Vector(random.nextDouble(-shake, shake), random.nextDouble(-shake, shake), random.nextDouble(-shake, shake)));
+
+        velocity.add(new Vector(random.nextDouble(-range, range), random.nextDouble(-range, range), random.nextDouble(-range, range)));
         projectile = shooter.launchProjectile(entityType, velocity);
         projectile.setGravity(gravity);
         projectile.setVelocity(velocity);
         projectile.setSilent(true);
-        SoundAsset.SHOOT.play(shotLocation);
+        SoundAsset.SHOOT.play(location);
 
         bullets.add(this);
 
         EventUtil.callEvent(new ShootEvent(shooter, this));
+        return this;
     }
 }

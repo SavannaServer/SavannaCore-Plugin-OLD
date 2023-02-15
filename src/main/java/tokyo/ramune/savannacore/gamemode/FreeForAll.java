@@ -1,16 +1,18 @@
 package tokyo.ramune.savannacore.gamemode;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import tokyo.ramune.savannacore.SavannaCore;
 import tokyo.ramune.savannacore.sidebar.SideBarHandler;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
-import tokyo.ramune.savannacore.world.SavannaWorld;
 
 public final class FreeForAll extends GameMode {
     public FreeForAll() {
@@ -33,15 +35,26 @@ public final class FreeForAll extends GameMode {
                 SavannaCore.getInstance(),
                 new SideBarListener()
         );
-        final SavannaWorld world = SavannaCore.getInstance().getGameServer().getGameModeHandler().getCurrentWorld();
-        Util.teleport(Util.getRandom(world.getSpawnLocations()));
     }
 
     @Override
     public void onUnload() {
-        super.onUnload();
-
         EventUtil.unregister(new SideBarListener());
+        final FreeForAll instance = this;
+        for (Player player : getPlayingPlayers()) {
+            player.sendTitlePart(TitlePart.TITLE, Component.text("Win!").color(TextColor.color(0xE2972B)));
+        }
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                instance.unload();
+            }
+        }.runTaskLater(SavannaCore.getInstance(), 100);
+    }
+
+    private void unload() {
+        super.onUnload();
     }
 
     @Override
@@ -66,13 +79,13 @@ public final class FreeForAll extends GameMode {
 
     private final class SideBar extends tokyo.ramune.savannacore.sidebar.SideBar {
         public SideBar(Player player) {
-            super(player, "Savanna");
+            super(player, Component.text("Savanna Server"));
 
             addBlankLine();
-            addLine(() -> getClass().getSimpleName());
+            addLine(() -> Component.text(getClass().getSimpleName()));
             addBlankLine();
-            addLine(() -> "Time left:");
-            addLine(() -> Util.formatElapsedTime(getCurrentTime()));
+            addLine(() -> Component.text("Time left:"));
+            addLine(() -> Component.text(Util.formatElapsedTime(getCurrentTime())));
         }
     }
 }

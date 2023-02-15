@@ -1,7 +1,6 @@
 package tokyo.ramune.savannacore;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import tokyo.ramune.savannacore.asset.MessageAsset;
 import tokyo.ramune.savannacore.config.CoreConfig;
 import tokyo.ramune.savannacore.database.DatabaseHandler;
 import tokyo.ramune.savannacore.debug.DebugHandler;
@@ -11,11 +10,13 @@ import tokyo.ramune.savannacore.gun.GunHandler;
 import tokyo.ramune.savannacore.inventory.InventoryHandler;
 import tokyo.ramune.savannacore.item.ItemHandler;
 import tokyo.ramune.savannacore.language.LanguageHandler;
+import tokyo.ramune.savannacore.menu.MenuHandler;
 import tokyo.ramune.savannacore.permission.SavannaPermission;
 import tokyo.ramune.savannacore.physics.PhysicsHandler;
 import tokyo.ramune.savannacore.server.GameServer;
 import tokyo.ramune.savannacore.sidebar.SideBarHandler;
 import tokyo.ramune.savannacore.utility.CommandUtil;
+import tokyo.ramune.savannacore.utility.SavannaRunnable;
 import tokyo.ramune.savannacore.world.WorldHandler;
 
 public final class SavannaCore extends JavaPlugin {
@@ -26,6 +27,8 @@ public final class SavannaCore extends JavaPlugin {
     private DatabaseHandler database;
     private WorldHandler worldHandler;
     private SideBarHandler sideBarHandler;
+    private MenuHandler menuHandler;
+    private InventoryHandler inventoryHandler;
     private PhysicsHandler physics;
     private ItemHandler itemHandler;
     private DebugHandler debugHandler;
@@ -50,6 +53,8 @@ public final class SavannaCore extends JavaPlugin {
         );
         worldHandler = new WorldHandler();
         sideBarHandler = new SideBarHandler();
+        menuHandler = new MenuHandler();
+        inventoryHandler = new InventoryHandler();
         physics = new PhysicsHandler();
         Bullet.registerListener();
         itemHandler = new ItemHandler();
@@ -57,13 +62,13 @@ public final class SavannaCore extends JavaPlugin {
 
         new Gun();
         new GunHandler();
-        new InventoryHandler();
         if (debugHandler == null) gameServer = new GameServer();
         getLogger().info("The plugin has been enabled.");
     }
 
     @Override
     public void onDisable() {
+        SavannaRunnable.cancelAll();
         try {
             if (database != null) database.getClient().close();
         } catch (Exception ignored) {
@@ -92,6 +97,14 @@ public final class SavannaCore extends JavaPlugin {
 
     public SideBarHandler getSideBarHandler() {
         return sideBarHandler;
+    }
+
+    public MenuHandler getMenuHandler() {
+        return menuHandler;
+    }
+
+    public InventoryHandler getInventoryHandler() {
+        return inventoryHandler;
     }
 
     public PhysicsHandler getPhysics() {

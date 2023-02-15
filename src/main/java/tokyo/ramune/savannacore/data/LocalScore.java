@@ -25,7 +25,7 @@ public final class LocalScore {
     public void applyGlobal() {
         final GlobalScore globalScore = new GlobalScore(playerUniqueId);
         for (Map.Entry<GlobalScore.Key, Object> entry : scores.entrySet()) {
-            globalScore.setValue(entry.getKey(), globalScore.getValue(entry.getKey()) + (long) entry.getValue());
+            globalScore.setValue(entry.getKey(), entry.getKey().add(globalScore.getValue(entry.getKey()), entry.getValue()));
         }
         globalScore.save();
     }

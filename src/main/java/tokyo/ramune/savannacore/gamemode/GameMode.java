@@ -2,14 +2,11 @@ package tokyo.ramune.savannacore.gamemode;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import tokyo.ramune.savannacore.SavannaCore;
+import tokyo.ramune.savannacore.data.LocalScore;
 import tokyo.ramune.savannacore.gamemode.event.GameModeEndEvent;
-import tokyo.ramune.savannacore.gamemode.event.GameModeStartEvent;
 import tokyo.ramune.savannacore.gamemode.event.GameModeUpdateEvent;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
@@ -23,6 +20,7 @@ public class GameMode {
     private final String name;
     private final int time;
     private final Set<Player> playingPlayers = new HashSet<>();
+    private final Set<LocalScore> localScores = new HashSet<>();
 
     private BukkitTask timerTask;
     private int currentTime;
@@ -78,13 +76,22 @@ public class GameMode {
         player.teleport(Util.getRandom(spawnLocations));
     }
 
-    void onPlayerJoin(Player player) {
+    void onPlayerJoin(@Nonnull Player player) {
+        playingPlayers.add(player);
     }
 
-    void onPlayerQuit(Player player) {
+    void onPlayerQuit(@Nonnull Player player) {
+        playingPlayers.remove(player);
     }
 
-    void onPlayerDeath() {
+    void onPlayerDeath(@Nonnull Player player) {
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                onPlayerQuit(player);
+            }
+        }.runTaskLater(SavannaCore.getInstance(), 60);
     }
 
     public final void joinPlayer(@Nonnull Player player) {
@@ -93,7 +100,7 @@ public class GameMode {
         onPlayerJoin(player);
     }
 
-    public final void leavePlayer(@Nonnull Player player) {
+    public final void quitPlayer(@Nonnull Player player) {
         if (!playingPlayers.contains(player)) return;
         playingPlayers.remove(player);
         onPlayerQuit(player);

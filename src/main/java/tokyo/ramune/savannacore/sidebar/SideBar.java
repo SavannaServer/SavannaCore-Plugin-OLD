@@ -4,10 +4,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
+import org.bukkit.scoreboard.*;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -16,12 +13,13 @@ public class SideBar {
     private final Scoreboard scoreboard;
     private final Objective objective;
     private final Player player;
-    private Map<Integer, Supplier<String>> lines;
-    private String title;
+    private Map<Integer, Supplier<Component>> lines;
+    private Component title;
 
-    public SideBar(Player player, String title) {
+    public SideBar(Player player, Component title) {
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        this.objective = scoreboard.registerNewObjective("SavannaCore.sideBar." + player.getUniqueId(), "dummy");
+        final String id = "SavannaCore.sideBar." + player.getUniqueId();
+        this.objective = scoreboard.registerNewObjective(id, Criteria.DUMMY, Component.text("TEXT"), RenderType.INTEGER);
         this.player = player;
         this.lines = new HashMap<>();
         this.title = title;
@@ -41,30 +39,30 @@ public class SideBar {
         return player;
     }
 
-    public String getTitle() {
+    public Component getTitle() {
         return title;
     }
 
-    public SideBar setTitle(String title) {
+    public SideBar setTitle(Component title) {
         this.title = title;
         return this;
     }
 
-    public Map<Integer, Supplier<String>> getLines() {
+    public Map<Integer, Supplier<Component>> getLines() {
         return lines;
     }
 
-    public SideBar setLines(Map<Integer, Supplier<String>> lines) {
+    public SideBar setLines(Map<Integer, Supplier<Component>> lines) {
         this.lines = lines;
         return this;
     }
 
-    public SideBar setLine(int index, Supplier<String> line) {
+    public SideBar setLine(int index, Supplier<Component> line) {
         lines.put(index, line);
         return this;
     }
 
-    public SideBar addLine(Supplier<String> line) {
+    public SideBar addLine(Supplier<Component> line) {
         if (lines.isEmpty()) {
             lines.put(0, line);
             return this;
@@ -75,16 +73,16 @@ public class SideBar {
     }
 
     public SideBar addBlankLine() {
-        return addLine(ChatColor.RESET::toString);
+        return addLine(() -> Component.text(ChatColor.RESET.toString()));
     }
 
-    public Map<Integer, Supplier<String>> getFixedLines() {
-        List<Supplier<String>> lineList = new ArrayList<>();
+    public Map<Integer, Supplier<Component>> getFixedLines() {
+        List<Supplier<Component>> lineList = new ArrayList<>();
         lines.forEach(lineList::add);
 
         Collections.reverse(lineList);
 
-        Map<Integer, Supplier<String>> lineMap = new HashMap<>();
+        Map<Integer, Supplier<Component>> lineMap = new HashMap<>();
         for (int i = 0; i < lineList.size(); i++)
             lineMap.put(i, lineList.get(i));
 
@@ -132,7 +130,7 @@ public class SideBar {
         getFixedLines().forEach((index, line) -> {
             Team team = scoreboard.registerNewTeam(String.valueOf(index));
             team.addEntry(getFakeEntryName(index));
-            team.prefix(Component.text(line.get()));
+            team.prefix(line.get());
             objective.getScore(getFakeEntryName(index)).setScore(index);
         });
     }
@@ -141,13 +139,13 @@ public class SideBar {
         if (!isMatchLines())
             initialize();
 
-        if (!objective.getDisplayName().equals(title))
-            objective.setDisplayName(title);
+        if (!objective.displayName().equals(title))
+            objective.displayName(title);
 
         getFixedLines().forEach((index, line) -> {
             Team team = scoreboard.getTeam(String.valueOf(index));
-            if (team != null && !team.getPrefix().equals(line.get()))
-                Objects.requireNonNull(scoreboard.getTeam(Integer.toString(index))).setPrefix(line.get());
+            if (team != null && !team.prefix().equals(line.get()))
+                Objects.requireNonNull(scoreboard.getTeam(Integer.toString(index))).prefix(line.get());
         });
     }
 

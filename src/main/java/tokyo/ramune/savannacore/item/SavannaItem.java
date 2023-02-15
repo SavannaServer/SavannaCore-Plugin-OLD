@@ -1,26 +1,28 @@
 package tokyo.ramune.savannacore.item;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import tokyo.ramune.savannacore.asset.SkinAsset;
+import tokyo.ramune.savannacore.utility.Util;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
-public class SavannaItem {
+public final class SavannaItem {
     private final Material type;
-    private final ItemRarity rarity;
-    private final int customModelData;
     private final String name;
+    private final SkinAsset skin;
 
     public SavannaItem(@Nonnull Material type,
                        @Nonnull String name,
-                       @Nonnull ItemRarity rarity,
-                       int customModelData) {
+                       @Nonnull SkinAsset skin) {
         this.type = type;
         this.name = name;
-        this.rarity = rarity;
-        this.customModelData = customModelData;
+        this.skin = skin;
     }
 
     public Material getType() {
@@ -31,20 +33,31 @@ public class SavannaItem {
         return name;
     }
 
-    public List<String> getLore() {
-        return
-                Arrays.asList(
-                        rarity.getColor() + "◆--------------◆",
-                        rarity.getColor() + "Rarity -> " + rarity.getName(),
-                        rarity.getColor() + "Skin   -> "
-                );
+    public List<Component> getLore() {
+        return Arrays.asList(
+                Util.coloredText(skin.getRarity().getTextColor(), "◆-----------------◆"),
+                Util.coloredText(skin.getRarity().getTextColor(), "Rarity -> " + skin.getRarity().getName()),
+                Util.coloredText(skin.getRarity().getTextColor(), "Skin   -> " + skin.getName()),
+                Util.coloredText(skin.getRarity().getTextColor(), "◆-----------------◆")
+        );
     }
 
-    public ItemRarity getRarity() {
-        return rarity;
+    public SkinAsset getSkin() {
+        return skin;
     }
 
-    public int getCustomModelData() {
-        return customModelData;
+    public void set(@Nonnull Inventory inventory, int slot) {
+        inventory.setItem(slot, toItemStack());
+    }
+
+    private ItemStack toItemStack() {
+        final ItemStack item = new ItemStack(type);
+        final ItemMeta meta = item.getItemMeta();
+        meta.displayName(Component.text(name));
+        meta.lore(getLore());
+        meta.setUnbreakable(true);
+        meta.setCustomModelData(skin.getCustomModelData());
+        item.setItemMeta(meta);
+        return item;
     }
 }

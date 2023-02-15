@@ -5,10 +5,10 @@ import tokyo.ramune.savannacore.physics.PhysicsHandler;
 
 import javax.annotation.Nonnull;
 
-public class PhysicsListener implements Listener {
+public class PhysicsHandlerListener implements Listener {
     private final PhysicsHandler physicsHandler;
 
-    public PhysicsListener(@Nonnull PhysicsHandler physicsHandler) {
+    public PhysicsHandlerListener(@Nonnull PhysicsHandler physicsHandler) {
         this.physicsHandler = physicsHandler;
     }
 

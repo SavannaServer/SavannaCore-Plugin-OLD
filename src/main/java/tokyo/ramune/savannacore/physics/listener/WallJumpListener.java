@@ -10,7 +10,7 @@ import tokyo.ramune.savannacore.physics.PhysicsHandler;
 
 import javax.annotation.Nonnull;
 
-public final class WallJumpListener extends PhysicsListener {
+public final class WallJumpListener extends PhysicsHandlerListener {
     public WallJumpListener(@Nonnull PhysicsHandler physicsHandler) {
         super(physicsHandler);
     }

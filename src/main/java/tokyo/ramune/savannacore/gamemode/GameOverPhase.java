@@ -13,17 +13,11 @@ import tokyo.ramune.savannacore.sidebar.SideBarHandler;
 import tokyo.ramune.savannacore.utility.EventUtil;
 import tokyo.ramune.savannacore.utility.Util;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public final class GameOverPhase extends GameMode {
-    private final VoteHandler voteHandler;
-    private final Set<Player> nonGravityPlayers = new HashSet<>();
+    private final VoteHandler voteHandler = new VoteHandler();
 
     public GameOverPhase() {
         super("Game Over", 15);
-        voteHandler = new VoteHandler();
-
     }
 
     @Override
@@ -53,9 +47,6 @@ public final class GameOverPhase extends GameMode {
                 new SideBarListener()
         );
 
-        for (Player player : nonGravityPlayers) {
-            player.setGravity(true);
-        }
         final String nextWorldName = Util.getRandom(SavannaCore.getInstance().getWorldHandler().getWorldNames());
 
         SavannaCore.getInstance()
@@ -86,13 +77,12 @@ public final class GameOverPhase extends GameMode {
 
     private final class SideBar extends tokyo.ramune.savannacore.sidebar.SideBar {
         public SideBar(Player player) {
-            super(player, "Savanna");
+            super(player, Component.text("Savanna Server"));
 
             addBlankLine();
-            addLine(() -> "");
+            addLine(() -> Component.text("Time left:"));
+            addLine(() -> Component.text(Util.formatElapsedTime(getCurrentTime())));
             addBlankLine();
-            addLine(() -> "Time left:");
-            addLine(() -> Util.formatElapsedTime(getCurrentTime()));
         }
     }
 }

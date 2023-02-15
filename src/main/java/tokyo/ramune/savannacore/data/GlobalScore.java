@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import tokyo.ramune.savannacore.SavannaCore;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 public final class GlobalScore {
@@ -51,38 +53,161 @@ public final class GlobalScore {
         }
     }
 
-    public long getValue(@Nonnull GlobalScore.Key key) {
-        return (long) object.get(key.getName());
+    public <T> T getValue(@Nonnull GlobalScore.Key<T> key) {
+        return (T) object.get(key.getName());
     }
 
-    public void setValue(@Nonnull GlobalScore.Key key, Object value) {
+    public <T> void setValue(@Nonnull GlobalScore.Key<T> key, T value) {
         object.put(key.getName(), value);
     }
 
-    public enum Key {
-        SCORE(0),
+    public interface Key<T> {
+        Key<Long> SCORE = new Key<>() {
+            @Override
+            public String getName() {
+                return "score";
+            }
 
-        KILLS(0),
-        DEATHS(0),
+            @Override
+            public Long getDefault() {
+                return 0L;
+            }
 
-        HITS(0),
-        HEADSHOTS(0),
+            @Override
+            public Long add(Long t1, Long t2) {
+                return t1 + t2;
+            }
+        };
+        Key<Long> PLAYTIME = new Key<>() {
+            @Override
+            public String getName() {
+                return "playtime";
+            }
 
-        WINS(0),
-        DEFEATS(0);
+            @Override
+            public Long getDefault() {
+                return 0L;
+            }
 
-        private final long def;
+            @Override
+            public Long add(Long t1, Long t2) {
+                return t1 + t2;
+            }
+        };
+        Key<Long> KILLS = new Key<>() {
+            @Override
+            public String getName() {
+                return "kills";
+            }
 
-        Key(long def) {
-            this.def = def;
+            @Override
+            public Long getDefault() {
+                return 0L;
+            }
+
+            @Override
+            public Long add(Long t1, Long t2) {
+                return t1 + t2;
+            }
+        };
+        Key<Long> DEATHS = new Key<>() {
+            @Override
+            public String getName() {
+                return "deaths";
+            }
+
+            @Override
+            public Long getDefault() {
+                return 0L;
+            }
+
+            @Override
+            public Long add(Long t1, Long t2) {
+                return t1 + t2;
+            }
+        };
+        Key<Long> HITS = new Key<>() {
+            @Override
+            public String getName() {
+                return "hits";
+            }
+
+            @Override
+            public Long getDefault() {
+                return 0L;
+            }
+
+            @Override
+            public Long add(Long t1, Long t2) {
+                return t1 + t2;
+            }
+        };
+        Key<Long> HEADSHOTS = new Key<>() {
+            @Override
+            public String getName() {
+                return "headshots";
+            }
+
+            @Override
+            public Long getDefault() {
+                return 0L;
+            }
+
+            @Override
+            public Long add(Long t1, Long t2) {
+                return t1 + t2;
+            }
+        };
+        Key<Long> WINS = new Key<>() {
+            @Override
+            public String getName() {
+                return "wins";
+            }
+
+            @Override
+            public Long getDefault() {
+                return 0L;
+            }
+
+            @Override
+            public Long add(Long t1, Long t2) {
+                return t1 + t2;
+            }
+        };
+        Key<Long> DEFEATS = new Key<>() {
+            @Override
+            public String getName() {
+                return "defeats";
+            }
+
+            @Override
+            public Long getDefault() {
+                return 0L;
+            }
+
+            @Override
+            public Long add(Long t1, Long t2) {
+                return t1 + t2;
+            }
+        };
+
+        static Collection<Key> values() {
+            return Set.of(
+                    SCORE,
+                    PLAYTIME,
+                    KILLS,
+                    DEATHS,
+                    HITS,
+                    HEADSHOTS,
+                    WINS,
+                    DEFEATS
+            );
         }
 
-        public long getDefault() {
-            return def;
-        }
+        String getName();
 
-        public String getName() {
-            return name().toLowerCase();
-        }
+        T getDefault();
+
+        T add(T t1, T t2);
     }
 }

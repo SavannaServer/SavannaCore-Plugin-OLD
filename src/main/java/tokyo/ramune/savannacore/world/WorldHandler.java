@@ -42,6 +42,14 @@ public final class WorldHandler {
         }
         load("sa.vote");
 
+        // Load ready world
+        if (!new File("sa.ready").exists()) {
+            SavannaCore.getInstance().getLogger().warning("Couldn't find sa.ready world!");
+            Bukkit.shutdown();
+            return;
+        }
+        load("sa.vote");
+
         // Load savanna game worlds
         for (String worldName : getWorldNames()) {
             load(worldName);
@@ -114,7 +122,8 @@ public final class WorldHandler {
 
         for (File file : Objects.requireNonNull(new File("./").listFiles())) {
             if (!file.getName().startsWith("sa.")) continue;
-            if (file.getName().equals("sa.vote") || file.getName().equals("sa.lobby")) continue;
+            if (file.getName().equals("sa.vote") || file.getName().equals("sa.lobby") || file.getName().equals("sa.ready"))
+                continue;
             worlds.add(file.getName());
         }
         return worlds;

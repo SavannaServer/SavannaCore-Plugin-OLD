@@ -1,5 +1,7 @@
 package tokyo.ramune.savannacore.utility;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,6 +14,14 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 public final class Util {
+    public static Component coloredText(@Nonnull TextColor color, @Nonnull String text) {
+        return Component.text(text).color(color);
+    }
+
+    public static Component text(@Nonnull String text) {
+        return Component.text(text);
+    }
+
     public static boolean isBetween(int i, int min, int max) {
         return min <= i && i <= max;
     }
@@ -33,6 +43,12 @@ public final class Util {
 
     public static void teleport(@Nonnull Location location) {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            player.teleport(location);
+        }
+    }
+
+    public static void teleport(@Nonnull Collection<Player> players, @Nonnull Location location) {
+        for (Player player : players) {
             player.teleport(location);
         }
     }
@@ -91,13 +107,13 @@ public final class Util {
         return locations;
     }
 
-    public static <T> T getVoteResult(@Nonnull Map<T, Integer> gameModeVotes) {
-        if (gameModeVotes.isEmpty()) throw new IllegalArgumentException("GameModeVotes must be non empty.");
+    public static <T> T getVoteResult(@Nonnull Map<T, Integer> votes) {
+        if (votes.isEmpty()) throw new IllegalArgumentException("entry must be non empty.");
 
-        final int maxVoteCount = Collections.max(gameModeVotes.entrySet(), Map.Entry.comparingByValue()).getValue();
+        final int maxVoteCount = Collections.max(votes.entrySet(), Map.Entry.comparingByValue()).getValue();
         final List<T> values = new ArrayList<>();
 
-        for (Map.Entry<T, Integer> entry : gameModeVotes.entrySet()) {
+        for (Map.Entry<T, Integer> entry : votes.entrySet()) {
             if (entry.getValue() != maxVoteCount) continue;
             values.add(entry.getKey());
         }

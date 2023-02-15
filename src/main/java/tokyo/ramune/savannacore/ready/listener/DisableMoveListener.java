@@ -1,17 +1,10 @@
-package tokyo.ramune.savannacore.gamemode.listener;
+package tokyo.ramune.savannacore.ready.listener;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
-import tokyo.ramune.savannacore.gamemode.GameReadyHandler;
 
-import javax.annotation.Nonnull;
-
-public final class DisableMoveListeber extends GameReadyListener {
-    public DisableMoveListeber(@Nonnull GameReadyHandler gameReadyHandler) {
-        super(gameReadyHandler);
-    }
-
+public class DisableMoveListener extends GameReadyHandlerListener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         final Player player = event.getPlayer();

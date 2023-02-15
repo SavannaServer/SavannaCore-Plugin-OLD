@@ -10,7 +10,7 @@ import tokyo.ramune.savannacore.physics.PhysicsHandler;
 
 import javax.annotation.Nonnull;
 
-public final class PhysicsAutoApplyListener extends PhysicsListener {
+public final class PhysicsAutoApplyListener extends PhysicsHandlerListener {
 
     public PhysicsAutoApplyListener(@Nonnull PhysicsHandler physicsHandler) {
         super(physicsHandler);
