@@ -15,6 +15,7 @@ import tokyo.ramune.savannacore.permission.SavannaPermission;
 import tokyo.ramune.savannacore.physics.PhysicsHandler;
 import tokyo.ramune.savannacore.server.GameServer;
 import tokyo.ramune.savannacore.sidebar.SideBarHandler;
+import tokyo.ramune.savannacore.spray.Spray;
 import tokyo.ramune.savannacore.utility.CommandUtil;
 import tokyo.ramune.savannacore.utility.SavannaRunnable;
 import tokyo.ramune.savannacore.world.WorldHandler;
@@ -64,6 +65,7 @@ public final class SavannaCore extends JavaPlugin {
         new GunHandler();
         if (debugHandler == null) gameServer = new GameServer();
         getLogger().info("The plugin has been enabled.");
+        new Spray().foo();
     }
 
     @Override
